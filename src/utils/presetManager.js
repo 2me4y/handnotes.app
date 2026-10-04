@@ -6,15 +6,19 @@
 export const PRESETS_STORAGE_KEY = 'konspekt_user_presets';
 
 import { SAMPLE_TEXTS } from './constants';
+import { SAMPLE_TEXTS_EN } from './i18n';
 
-export const BUILTIN_PRESETS = [
+export const BUILTIN_TEMPLATE_DEFINITIONS = [
   {
     id: 'builtin_school_math',
-    name: 'Школьная математика (2 клетки)',
-    category: 'Школа',
-    description: 'Классическая тетрадь в клетку 35 px, синяя ручка, шаг строк 70 px (через клетку), школьные поля 290 px',
-    isBuiltin: true,
-    sampleText: SAMPLE_TEXTS.algebra,
+    nameRu: 'Школьная математика (2 клетки)',
+    nameEn: 'School Math (2 cells)',
+    catRu: 'Школа',
+    catEn: 'School',
+    descRu: 'Классическая тетрадь в клетку 35 px, синяя ручка, шаг строк 70 px (через клетку), школьные поля 290 px',
+    descEn: 'Classic 5mm grid notebook, blue pen, 70px line height, school margin line',
+    sampleTextRu: SAMPLE_TEXTS.algebra,
+    sampleTextEn: SAMPLE_TEXTS_EN.algebra,
     config: {
       fontFamily: 'Caveat',
       fontSize: 42,
@@ -45,11 +49,14 @@ export const BUILTIN_PRESETS = [
   },
   {
     id: 'builtin_school_russian',
-    name: 'Русский язык (Тетрадь в линейку)',
-    category: 'Школа',
-    description: 'Школьная линейка 50 px с полями, каллиграфический почерк Marck Script, аккуратная домашняя работа',
-    isBuiltin: true,
-    sampleText: SAMPLE_TEXTS.russian,
+    nameRu: 'Русский язык (Тетрадь в линейку)',
+    nameEn: 'Literary Essay (Ruled Paper)',
+    catRu: 'Школа',
+    catEn: 'School',
+    descRu: 'Школьная линейка 50 px с полями, каллиграфический почерк Marck Script, аккуратная домашняя работа',
+    descEn: 'Ruled school paper (50px lines) with margin line, elegant cursive script, neat homework',
+    sampleTextRu: SAMPLE_TEXTS.russian,
+    sampleTextEn: SAMPLE_TEXTS_EN.russian,
     config: {
       fontFamily: 'Marck Script',
       fontSize: 34,
@@ -80,11 +87,14 @@ export const BUILTIN_PRESETS = [
   },
   {
     id: 'builtin_school_copybook',
-    name: 'Прописи (Косая линейка)',
-    category: 'Школа',
-    description: 'Тетрадь в частую косую линейку для чистописания 1–2 класса, каллиграфические буквы с правильным наклоном',
-    isBuiltin: true,
-    sampleText: SAMPLE_TEXTS.cursive_copybook,
+    nameRu: 'Прописи (Косая линейка)',
+    nameEn: 'Cursive Penmanship (Slanted Lines)',
+    catRu: 'Школа',
+    catEn: 'School',
+    descRu: 'Тетрадь в частую косую линейку для чистописания 1–2 класса, каллиграфические буквы с правильным наклоном',
+    descEn: 'Narrow calligraphy practice lines with 65° slant guidelines, elegant script letters',
+    sampleTextRu: SAMPLE_TEXTS.cursive_copybook,
+    sampleTextEn: SAMPLE_TEXTS_EN.cursive_copybook,
     config: {
       fontFamily: 'Marck Script',
       fontSize: 30,
@@ -114,11 +124,14 @@ export const BUILTIN_PRESETS = [
   },
   {
     id: 'builtin_dense_1cell',
-    name: 'Плотный студенческий конспект (1 клетка)',
-    category: 'Университет',
-    description: 'Каждая строка в клетку: 35 px межстрочный, мелкий беглый почерк 28 px, тёмно-синяя ручка',
-    isBuiltin: true,
-    sampleText: SAMPLE_TEXTS.math_uni,
+    nameRu: 'Плотный студенческий конспект (1 клетка)',
+    nameEn: 'Dense University Notes (1 cell)',
+    catRu: 'Университет',
+    catEn: 'University',
+    descRu: 'Каждая строка в клетку: 35 px межстрочный, мелкий беглый почерк 28 px, тёмно-синяя ручка',
+    descEn: 'Every grid line written (35px height), fine 28px handwriting, dark blue ink',
+    sampleTextRu: SAMPLE_TEXTS.math_uni,
+    sampleTextEn: SAMPLE_TEXTS_EN.math_uni,
     config: {
       fontFamily: 'Caveat',
       fontSize: 28,
@@ -149,11 +162,14 @@ export const BUILTIN_PRESETS = [
   },
   {
     id: 'builtin_physics_lecture',
-    name: 'Лекция по физике (Термодинамика)',
-    category: 'Университет',
-    description: 'Стандартный конспект с формулами, законами и выводами, синяя паста, школьная сетка 35 px',
-    isBuiltin: true,
-    sampleText: SAMPLE_TEXTS.physics,
+    nameRu: 'Лекция по физике (Термодинамика)',
+    nameEn: 'Physics Lecture (Thermodynamics)',
+    catRu: 'Университет',
+    catEn: 'University',
+    descRu: 'Стандартный конспект с формулами, законами и выводами, синяя паста, школьная сетка 35 px',
+    descEn: 'Standard science lecture notes with equations and laws, blue pen, 35px grid notebook',
+    sampleTextRu: SAMPLE_TEXTS.physics,
+    sampleTextEn: SAMPLE_TEXTS_EN.physics,
     config: {
       fontFamily: 'Caveat',
       fontSize: 40,
@@ -184,11 +200,14 @@ export const BUILTIN_PRESETS = [
   },
   {
     id: 'builtin_chemistry',
-    name: 'Химия (Органические реакции)',
-    category: 'Наука',
-    description: 'Чёрная гелевая ручка, рукописный шрифт Neucha, тетрадь в клетку с химическими свойствами',
-    isBuiltin: true,
-    sampleText: SAMPLE_TEXTS.chemistry,
+    nameRu: 'Химия (Органические реакции)',
+    nameEn: 'Organic Chemistry (Reactions)',
+    catRu: 'Наука',
+    catEn: 'Science',
+    descRu: 'Чёрная гелевая ручка, рукописный шрифт Neucha, тетрадь в клетку с химическими свойствами',
+    descEn: 'Black gel pen, neat Neucha script, grid paper with molecular properties and reactions',
+    sampleTextRu: SAMPLE_TEXTS.chemistry,
+    sampleTextEn: SAMPLE_TEXTS_EN.chemistry,
     config: {
       fontFamily: 'Neucha',
       fontSize: 34,
@@ -219,11 +238,14 @@ export const BUILTIN_PRESETS = [
   },
   {
     id: 'builtin_biology',
-    name: 'Биология (Цитология и клетка)',
-    category: 'Наука',
-    description: 'Тетрадь в линейку, аккуратный студенческий почерк Bad Script, синяя паста, понятная структура',
-    isBuiltin: true,
-    sampleText: SAMPLE_TEXTS.biology,
+    nameRu: 'Биология (Цитология и клетка)',
+    nameEn: 'Cell Biology & Cytology',
+    catRu: 'Наука',
+    catEn: 'Science',
+    descRu: 'Тетрадь в линейку, аккуратный студенческий почерк Bad Script, синяя паста, понятная структура',
+    descEn: 'Ruled notebook, student handwriting Bad Script, blue ballpoint pen, structured notes',
+    sampleTextRu: SAMPLE_TEXTS.biology,
+    sampleTextEn: SAMPLE_TEXTS_EN.biology,
     config: {
       fontFamily: 'Bad Script',
       fontSize: 34,
@@ -254,11 +276,14 @@ export const BUILTIN_PRESETS = [
   },
   {
     id: 'builtin_lab_report',
-    name: 'Лабораторная работа (Физика)',
-    category: 'Лабораторная',
-    description: 'Строгий технический печатный почерк Kelly Slab, тёмно-синяя ручка, формулы погрешностей и вывод',
-    isBuiltin: true,
-    sampleText: SAMPLE_TEXTS.lab_work,
+    nameRu: 'Лабораторная работа (Физика)',
+    nameEn: 'Physics Laboratory Report',
+    catRu: 'Лабораторная',
+    catEn: 'Lab Report',
+    descRu: 'Строгий технический печатный почерк Kelly Slab, тёмно-синяя ручка, формулы погрешностей и вывод',
+    descEn: 'Clean technical print style Kelly Slab, dark blue ink, measurement errors and conclusions',
+    sampleTextRu: SAMPLE_TEXTS.lab_work,
+    sampleTextEn: SAMPLE_TEXTS_EN.lab_work,
     config: {
       fontFamily: 'Kelly Slab',
       fontSize: 34,
@@ -289,11 +314,14 @@ export const BUILTIN_PRESETS = [
   },
   {
     id: 'builtin_bujo_dots',
-    name: 'Bullet Journal (Точечный планер)',
-    category: 'Планер',
-    description: 'Тетрадь в точку (Dot Grid 35 px), современный почерк Shantell Sans, черная гелевая ручка, чек-листы',
-    isBuiltin: true,
-    sampleText: SAMPLE_TEXTS.bujo,
+    nameRu: 'Bullet Journal (Точечный планер)',
+    nameEn: 'Bullet Journal (Dot Grid Planner)',
+    catRu: 'Планер',
+    catEn: 'Planner',
+    descRu: 'Тетрадь в точку (Dot Grid 35 px), современный почерк Shantell Sans, черная гелевая ручка, чек-листы',
+    descEn: 'Dot grid paper (35px), modern clean handwriting Shantell Sans, black gel pen, habit trackers',
+    sampleTextRu: SAMPLE_TEXTS.bujo,
+    sampleTextEn: SAMPLE_TEXTS_EN.bujo,
     config: {
       fontFamily: 'Shantell Sans',
       fontSize: 30,
@@ -324,11 +352,14 @@ export const BUILTIN_PRESETS = [
   },
   {
     id: 'builtin_english_notes',
-    name: 'Английский язык (Grammar & Rules)',
-    category: 'Языки',
-    description: 'Тетрадь в линейку, насыщенные фиолетовые чернила, шрифт Caveat, правила времен и полезные идиомы',
-    isBuiltin: true,
-    sampleText: SAMPLE_TEXTS.english,
+    nameRu: 'Английский язык (Grammar & Rules)',
+    nameEn: 'Grammar & Vocabulary Rules',
+    catRu: 'Языки',
+    catEn: 'Languages',
+    descRu: 'Тетрадь в линейку, насыщенные фиолетовые чернила, шрифт Caveat, правила времен и полезные идиомы',
+    descEn: 'Ruled paper, rich purple fountain pen ink, Caveat font, verb tenses and common idioms',
+    sampleTextRu: SAMPLE_TEXTS.english,
+    sampleTextEn: SAMPLE_TEXTS_EN.english,
     config: {
       fontFamily: 'Caveat',
       fontSize: 38,
@@ -359,11 +390,14 @@ export const BUILTIN_PRESETS = [
   },
   {
     id: 'builtin_history_timeline',
-    name: 'История (Хронология и даты)',
-    category: 'Школа',
-    description: 'Школьная клетка, синяя паста, даты, тезисы и ключевые географические открытия',
-    isBuiltin: true,
-    sampleText: SAMPLE_TEXTS.history,
+    nameRu: 'История (Хронология и даты)',
+    nameEn: 'World History (Age of Discovery)',
+    catRu: 'Школа',
+    catEn: 'School',
+    descRu: 'Школьная клетка, синяя паста, даты, тезисы и ключевые географические открытия',
+    descEn: 'Grid paper, blue pen, timeline dates, key expeditions and global outcomes',
+    sampleTextRu: SAMPLE_TEXTS.history,
+    sampleTextEn: SAMPLE_TEXTS_EN.history,
     config: {
       fontFamily: 'Caveat',
       fontSize: 40,
@@ -394,11 +428,14 @@ export const BUILTIN_PRESETS = [
   },
   {
     id: 'builtin_it_datastruct',
-    name: 'Информатика и IT (Структуры данных)',
-    category: 'Университет',
-    description: 'Чёрная гелевая ручка, ровный округлый почерк Kurale, алгоритмы, массивы, списки и O(1)/O(n)',
-    isBuiltin: true,
-    sampleText: SAMPLE_TEXTS.programming,
+    nameRu: 'Информатика и IT (Структуры данных)',
+    nameEn: 'Computer Science (Data Structures)',
+    catRu: 'Университет',
+    catEn: 'University',
+    descRu: 'Чёрная гелевая ручка, ровный округлый почерк Kurale, алгоритмы, массивы, списки и O(1)/O(n)',
+    descEn: 'Black gel pen, clean rounded script Kurale, algorithms, arrays, lists and O(1)/O(n)',
+    sampleTextRu: SAMPLE_TEXTS.programming,
+    sampleTextEn: SAMPLE_TEXTS_EN.programming,
     config: {
       fontFamily: 'Kurale',
       fontSize: 34,
@@ -429,11 +466,13 @@ export const BUILTIN_PRESETS = [
   },
   {
     id: 'builtin_mini_20px',
-    name: 'Шпаргалка / Мелкий почерк (20 px)',
-    category: 'Студент',
-    description: 'Минимальный интервал 20 px, компактный размер шрифта 18 px для формул, определений и шпаргалок',
-    isBuiltin: true,
-    sampleText: `Краткие формулы к экзамену:
+    nameRu: 'Шпаргалка / Мелкий почерк (20 px)',
+    nameEn: 'Compact Exam Cheat Sheet (20px)',
+    catRu: 'Студент',
+    catEn: 'Student',
+    descRu: 'Минимальный интервал 20 px, компактный размер шрифта 18 px для формул, определений и шпаргалок',
+    descEn: 'Minimal 20px line spacing, tiny 18px font size for formulas, definitions and exam prep',
+    sampleTextRu: `Краткие формулы к экзамену:
 v = v₀ + at;  S = v₀t + at²/2;  v² - v₀² = 2aS.
 F = ma;  F_тр = μN;  F_упр = -kx;  F_тяж = mg.
 A = F·S·cos α;  N = A/t;  E_к = mv²/2;  E_п = mgh.
@@ -443,6 +482,15 @@ Q = cmΔT;  Q = λm;  Q = Lm;  Q = qm.
 I = U/R;  R = ρl/S;  P = UI = I²R = U²/R.
 Q = I²Rt (закон Джоуля-Ленца).
 F_Л = qvB sin α;  F_А = IBl sin α.`,
+    sampleTextEn: `Physics Formula Quick Sheet:
+v = v₀ + at;  s = v₀t + ½at²;  v² - v₀² = 2as.
+F = ma;  f_k = μN;  F_s = -kx;  F_g = mg.
+W = F·d·cos θ;  P = W/t;  K = ½mv²;  U = mgh.
+p = mv;  p₁ + p₂ = const (conservation of momentum).
+PV = nRT (Ideal Gas Equation).
+Q = mcΔT;  Q = mL (latent heat).
+V = IR;  R = ρL/A;  P = IV = I²R = V²/R.
+F_B = qvB sin θ (Lorentz magnetic force).`,
     config: {
       fontFamily: 'Caveat',
       fontSize: 20,
@@ -473,11 +521,14 @@ F_Л = qvB sin α;  F_А = IBl sin α.`,
   },
   {
     id: 'builtin_realistic_photo_3d',
-    name: '3D Фото под углом (Трапеция + Бугор)',
-    category: '3D Эффект',
-    description: 'Реалистичный вид изогнутого листа сфотографированной тетради: перспектива +25%, изгиб листа +20 px',
-    isBuiltin: true,
-    sampleText: SAMPLE_TEXTS.physics,
+    nameRu: '3D Фото под углом (Трапеция + Бугор)',
+    nameEn: '3D Angle Photo (Keystone + Bulge)',
+    catRu: '3D Эффект',
+    catEn: '3D Effect',
+    descRu: 'Реалистичный вид изогнутого листа сфотографированной тетради: перспектива +25%, изгиб листа +20 px',
+    descEn: 'Realistic tilted notebook photo: +25% perspective tilt and +20px sheet curvature bulge',
+    sampleTextRu: SAMPLE_TEXTS.physics,
+    sampleTextEn: SAMPLE_TEXTS_EN.physics,
     config: {
       fontFamily: 'Marck Script',
       fontSize: 38,
@@ -509,11 +560,14 @@ F_Л = qvB sin α;  F_А = IBl sin α.`,
   },
   {
     id: 'builtin_lecture_black_ink',
-    name: 'Строгая лекция (Чёрная гелевая ручка)',
-    category: 'Университет',
-    description: 'Чёрные насыщенные чернила, шрифт Kelly Slab, ровные аккуратные строки',
-    isBuiltin: true,
-    sampleText: SAMPLE_TEXTS.math_uni,
+    nameRu: 'Строгая лекция (Чёрная гелевая ручка)',
+    nameEn: 'Formal Lecture (Black Gel Pen)',
+    catRu: 'Университет',
+    catEn: 'University',
+    descRu: 'Чёрные насыщенные чернила, шрифт Kelly Slab, ровные аккуратные строки',
+    descEn: 'Deep black ink, straight Kelly Slab print font, perfectly spaced lines',
+    sampleTextRu: SAMPLE_TEXTS.math_uni,
+    sampleTextEn: SAMPLE_TEXTS_EN.math_uni,
     config: {
       fontFamily: 'Kelly Slab',
       fontSize: 36,
@@ -543,6 +597,21 @@ F_Л = qvB sin α;  F_А = IBl sin α.`,
     },
   },
 ];
+
+export function getBuiltinPresets(lang = 'ru') {
+  const isEn = lang === 'en';
+  return BUILTIN_TEMPLATE_DEFINITIONS.map((p) => ({
+    id: p.id,
+    name: isEn ? p.nameEn : p.nameRu,
+    category: isEn ? p.catEn : p.catRu,
+    description: isEn ? p.descEn : p.descRu,
+    sampleText: isEn ? p.sampleTextEn : p.sampleTextRu,
+    isBuiltin: true,
+    config: p.config,
+  }));
+}
+
+export const BUILTIN_PRESETS = getBuiltinPresets('ru');
 
 /**
  * Load all user-saved presets from localStorage

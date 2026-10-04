@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import {
   FileText,
   Type,
@@ -27,7 +27,8 @@ import {
 } from 'lucide-react';
 import { DEFAULT_FONTS, INK_COLORS, SAMPLE_TEXTS } from '../utils/constants';
 import { PAPER_PRESETS } from '../utils/paperEngine';
-import { BUILTIN_PRESETS } from '../utils/presetManager';
+import { getBuiltinPresets } from '../utils/presetManager';
+import { TRANSLATIONS, SAMPLE_TEXTS_EN } from '../utils/i18n';
 
 export default function Sidebar({
   isOpen = true,
@@ -64,7 +65,13 @@ export default function Sidebar({
   onResetAll,
   totalPages,
   totalLines,
+  lang = 'ru',
+  t: propT,
 }) {
+  const t = propT || TRANSLATIONS[lang] || TRANSLATIONS.ru;
+  const builtinPresets = useMemo(() => getBuiltinPresets(lang), [lang]);
+  const sampleTexts = lang === 'en' ? SAMPLE_TEXTS_EN : SAMPLE_TEXTS;
+
   const [activeTab, setActiveTab] = useState('text');
   const [newPresetName, setNewPresetName] = useState('');
   const [presetSaveSuccess, setPresetSaveSuccess] = useState(false);
@@ -109,48 +116,48 @@ export default function Sidebar({
           onClick={() => setActiveTab('text')}
         >
           <FileText size={18} />
-          <span>Текст</span>
+          <span>{t.tabText || 'Текст'}</span>
         </button>
         <button
           className={`tab-btn ${activeTab === 'font' ? 'active' : ''}`}
           onClick={() => setActiveTab('font')}
         >
           <Type size={18} />
-          <span>Шрифт</span>
+          <span>{t.tabFont || 'Шрифт'}</span>
         </button>
         <button
           className={`tab-btn ${activeTab === 'paper' ? 'active' : ''}`}
           onClick={() => setActiveTab('paper')}
         >
           <ImageIcon size={18} />
-          <span>Тетрадь</span>
+          <span>{t.tabPaper || 'Тетрадь'}</span>
         </button>
         <button
           className={`tab-btn ${activeTab === 'layout' ? 'active' : ''}`}
           onClick={() => setActiveTab('layout')}
         >
           <Sliders size={18} />
-          <span>Поля</span>
+          <span>{t.tabLayout || 'Поля'}</span>
         </button>
         <button
           className={`tab-btn ${activeTab === 'presets' ? 'active' : ''}`}
           onClick={() => setActiveTab('presets')}
-          title="Сохранённые и готовые пресеты настроек"
+          title={t.tabPresets || 'Сохранённые и готовые пресеты настроек'}
         >
           <Bookmark size={18} />
-          <span>Пресеты</span>
+          <span>{t.tabPresets || 'Пресеты'}</span>
         </button>
         <button
           className={`tab-btn ${activeTab === 'export' ? 'active' : ''}`}
           onClick={() => setActiveTab('export')}
         >
           <Download size={18} />
-          <span>Экспорт</span>
+          <span>{t.tabExport || 'Экспорт'}</span>
         </button>
         <button
           className="sidebar-hide-btn"
           onClick={onToggleSidebar}
-          title="Скрыть боковую панель (Ctrl+B)"
+          title={t.sidebarToggleTitleHide || 'Скрыть боковую панель (Ctrl+B)'}
         >
           <PanelLeftClose size={16} />
         </button>
@@ -166,15 +173,15 @@ export default function Sidebar({
               <div className="blocks-manager-header">
                 <div className="blocks-header-title">
                   <Layers size={16} />
-                  <span>Блоки текста ({textBlocks?.length || 1})</span>
+                  <span>{t.blocksTitle || 'Блоки текста'} ({textBlocks?.length || 1})</span>
                 </div>
                 <button
                   className="add-block-btn"
                   onClick={onAddBlock}
-                  title="Добавить новый блок текста снизу или в произвольное место"
+                  title={t.addBlockBtnTitle || 'Добавить новый блок текста снизу или в произвольное место'}
                 >
                   <Plus size={14} />
-                  <span>+ Новый блок</span>
+                  <span>{t.newBlockBtn || 'Новый блок'}</span>
                 </button>
               </div>
 
@@ -185,19 +192,19 @@ export default function Sidebar({
                     key={block.id}
                     className={`block-chip ${block.id === activeBlockId ? 'active' : ''}`}
                     onClick={() => onSelectBlock && onSelectBlock(block.id)}
-                    title={`Редактировать "${block.name || `Блок ${idx + 1}`}"`}
+                    title={t.editBlockTitle ? t.editBlockTitle.replace('{name}', block.name || (lang === 'en' ? `Block ${idx + 1}` : `Блок ${idx + 1}`)) : `Редактировать "${block.name || `Блок ${idx + 1}`}"`}
                   >
-                    <span className="block-chip-name">{block.name || `Блок ${idx + 1}`}</span>
+                    <span className="block-chip-name">{block.name || (lang === 'en' ? `Block ${idx + 1}` : `Блок ${idx + 1}`)}</span>
                     {textBlocks.length > 1 && (
                       <button
                         className="block-chip-del-btn"
                         onClick={(e) => {
                           e.stopPropagation();
-                          if (window.confirm(`Удалить "${block.name || 'этот блок'}"?`)) {
+                          if (window.confirm(t.confirmDeleteBlock ? t.confirmDeleteBlock.replace('{name}', block.name || 'this block') : `Удалить "${block.name || 'этот блок'}"?`)) {
                             onDeleteBlock && onDeleteBlock(block.id);
                           }
                         }}
-                        title="Удалить этот блок"
+                        title={t.deleteBlock || 'Удалить этот блок'}
                       >
                         <Trash2 size={12} />
                       </button>
@@ -210,7 +217,7 @@ export default function Sidebar({
               {activeBlock && (
                 <div className="active-block-bar">
                   <div className="active-block-name-wrap">
-                    <span className="active-block-label">Редактируется:</span>
+                    <span className="active-block-label">{t.editingBlock || 'Редактируется:'}</span>
                     {editingBlockNameId === activeBlock.id ? (
                       <input
                         type="text"
@@ -240,9 +247,9 @@ export default function Sidebar({
                           setEditingBlockNameId(activeBlock.id);
                           setTempBlockName(activeBlock.name || '');
                         }}
-                        title="Нажмите, чтобы переименовать этот блок"
+                        title={t.renameBlockHint || 'Нажмите, чтобы переименовать этот блок'}
                       >
-                        <strong>{activeBlock.name || 'Блок'}</strong>
+                        <strong>{activeBlock.name || (lang === 'en' ? 'Block' : 'Блок')}</strong>
                         <span className="tiny-edit-hint">✎</span>
                       </span>
                     )}
@@ -252,23 +259,23 @@ export default function Sidebar({
                     <button
                       className="tiny-action-btn"
                       onClick={() => onDuplicateBlock && onDuplicateBlock(activeBlock.id)}
-                      title="Дублировать этот блок текста"
+                      title={t.activeBlockDuplicateTitle || 'Дублировать этот блок текста'}
                     >
                       <Copy size={13} />
-                      <span>Копия</span>
+                      <span>{t.duplicateBlock || 'Копия'}</span>
                     </button>
                     {textBlocks && textBlocks.length > 1 && (
                       <button
                         className="tiny-action-btn danger"
                         onClick={() => {
-                          if (window.confirm(`Удалить "${activeBlock.name || 'этот блок'}"?`)) {
+                          if (window.confirm(t.confirmDeleteBlock ? t.confirmDeleteBlock.replace('{name}', activeBlock.name || 'this block') : `Удалить "${activeBlock.name || 'этот блок'}"?`)) {
                             onDeleteBlock && onDeleteBlock(activeBlock.id);
                           }
                         }}
-                        title="Удалить этот блок текста"
+                        title={t.activeBlockDeleteTitle || 'Удалить этот блок текста'}
                       >
                         <Trash2 size={13} />
-                        <span>Удалить</span>
+                        <span>{t.deleteBlock || 'Удалить'}</span>
                       </button>
                     )}
                   </div>
@@ -277,85 +284,85 @@ export default function Sidebar({
             </div>
 
             <div className="pane-header">
-              <h3>Текст конспекта</h3>
+              <h3>{t.notesTextTitle || 'Текст конспекта'}</h3>
               <div className="sample-presets">
-                <span className="preset-label">Примеры:</span>
+                <span className="preset-label">{t.examplesLabel || 'Примеры:'}</span>
                 <button
                   className="chip-btn"
-                  onClick={() => setText(SAMPLE_TEXTS.algebra)}
-                  title="Школьная алгебра (квадратные уравнения)"
+                  onClick={() => setText(sampleTexts.algebra)}
+                  title={lang === 'en' ? 'School Algebra' : 'Школьная алгебра (квадратные уравнения)'}
                 >
-                  Алгебра
+                  {t.sampleAlgebra || 'Алгебра'}
                 </button>
                 <button
                   className="chip-btn"
-                  onClick={() => setText(SAMPLE_TEXTS.russian)}
-                  title="Русский язык (упражнение)"
+                  onClick={() => setText(sampleTexts.russian)}
+                  title={lang === 'en' ? 'Literary Essay' : 'Русский язык (упражнение)'}
                 >
-                  Русский
+                  {t.sampleRussian || 'Русский'}
                 </button>
                 <button
                   className="chip-btn"
-                  onClick={() => setText(SAMPLE_TEXTS.physics)}
-                  title="Физика (термодинамика)"
+                  onClick={() => setText(sampleTexts.physics)}
+                  title={lang === 'en' ? 'Physics Lecture' : 'Физика (термодинамика)'}
                 >
-                  Физика
+                  {t.samplePhysics || 'Физика'}
                 </button>
                 <button
                   className="chip-btn"
-                  onClick={() => setText(SAMPLE_TEXTS.chemistry)}
-                  title="Органическая химия"
+                  onClick={() => setText(sampleTexts.chemistry)}
+                  title={lang === 'en' ? 'Organic Chemistry' : 'Органическая химия'}
                 >
-                  Химия
+                  {t.sampleChemistry || 'Химия'}
                 </button>
                 <button
                   className="chip-btn"
-                  onClick={() => setText(SAMPLE_TEXTS.biology)}
-                  title="Биология (клетка)"
+                  onClick={() => setText(sampleTexts.biology)}
+                  title={lang === 'en' ? 'Biology & Cytology' : 'Биология (клетка)'}
                 >
-                  Биология
+                  {t.sampleBiology || 'Биология'}
                 </button>
                 <button
                   className="chip-btn"
-                  onClick={() => setText(SAMPLE_TEXTS.history)}
-                  title="История (географические открытия)"
+                  onClick={() => setText(sampleTexts.history)}
+                  title={lang === 'en' ? 'World History' : 'История (географические открытия)'}
                 >
-                  История
+                  {t.sampleHistory || 'История'}
                 </button>
                 <button
                   className="chip-btn"
-                  onClick={() => setText(SAMPLE_TEXTS.programming)}
-                  title="IT и структуры данных"
+                  onClick={() => setText(sampleTexts.programming)}
+                  title={lang === 'en' ? 'Computer Science' : 'IT и структуры данных'}
                 >
-                  IT
+                  {t.sampleProgramming || 'IT'}
                 </button>
                 <button
                   className="chip-btn"
-                  onClick={() => setText(SAMPLE_TEXTS.english)}
-                  title="Английский язык"
+                  onClick={() => setText(sampleTexts.english)}
+                  title={lang === 'en' ? 'English Grammar' : 'Английский язык'}
                 >
-                  English
+                  {t.sampleEnglish || 'English'}
                 </button>
                 <button
                   className="chip-btn"
-                  onClick={() => setText(SAMPLE_TEXTS.lab_work)}
-                  title="Лабораторная работа"
+                  onClick={() => setText(sampleTexts.lab_work)}
+                  title={lang === 'en' ? 'Physics Lab Report' : 'Лабораторная работа'}
                 >
-                  Лаб. работа
+                  {t.sampleLab || 'Лаб. работа'}
                 </button>
                 <button
                   className="chip-btn"
-                  onClick={() => setText(SAMPLE_TEXTS.bujo)}
-                  title="Bullet Journal планер"
+                  onClick={() => setText(sampleTexts.bujo)}
+                  title={lang === 'en' ? 'Bullet Journal Planner' : 'Bullet Journal планер'}
                 >
-                  Планер
+                  {t.sampleBujo || 'Планер'}
                 </button>
                 <button
                   className="chip-btn"
-                  onClick={() => setText(SAMPLE_TEXTS.cursive_copybook)}
-                  title="Прописи"
+                  onClick={() => setText(sampleTexts.cursive_copybook)}
+                  title={lang === 'en' ? 'Cursive Penmanship' : 'Прописи'}
                 >
-                  Прописи
+                  {t.sampleCopybook || 'Прописи'}
                 </button>
               </div>
             </div>
@@ -364,7 +371,7 @@ export default function Sidebar({
               className="text-input-area"
               value={text}
               onChange={(e) => setText(e.target.value)}
-              placeholder="Введите или вставьте сюда текст вашей лекции или конспекта..."
+              placeholder={t.textareaPlaceholder || 'Введите или вставьте сюда текст вашей лекции или конспекта...'}
               rows={14}
             />
 
@@ -372,13 +379,17 @@ export default function Sidebar({
             <div
               className="template-shortcut-card"
               onClick={() => setActiveTab('presets')}
-              title="Перейти к полной коллекции готовых шаблонов тетрадей"
+              title={t.templateShortcutSub || 'Перейти к полной коллекции готовых шаблонов тетрадей'}
             >
               <div className="shortcut-info">
                 <Sparkles size={16} className="shortcut-sparkle" />
                 <div>
-                  <span className="shortcut-title">Готовые шаблоны тетрадей ({BUILTIN_PRESETS.length})</span>
-                  <span className="shortcut-sub">Школа, университет, формулы, линейка, прописи, планер</span>
+                  <span className="shortcut-title">
+                    {t.templateShortcutTitle ? t.templateShortcutTitle.replace('{count}', builtinPresets.length) : `Готовые шаблоны тетрадей (${builtinPresets.length})`}
+                  </span>
+                  <span className="shortcut-sub">
+                    {t.templateShortcutSub || 'Школа, университет, формулы, линейка, прописи, планер'}
+                  </span>
                 </div>
               </div>
               <ChevronRight size={16} />
@@ -386,16 +397,16 @@ export default function Sidebar({
 
             <div className="text-stats">
               <div className="stat-item">
-                Символов: <strong>{text.length}</strong>
+                {t.statChars || 'Символов:'} <strong>{text.length}</strong>
               </div>
               <div className="stat-item">
-                Слов: <strong>{text.trim() ? text.trim().split(/\s+/).length : 0}</strong>
+                {t.statWords || 'Слов:'} <strong>{text.trim() ? text.trim().split(/\s+/).length : 0}</strong>
               </div>
               <div className="stat-item">
-                Строк: <strong>{totalLines}</strong>
+                {t.statLines || 'Строк:'} <strong>{totalLines}</strong>
               </div>
               <div className="stat-item">
-                Страниц: <strong>{Math.max(1, totalPages)}</strong>
+                {t.statPages || 'Страниц:'} <strong>{Math.max(1, totalPages)}</strong>
               </div>
             </div>
 
@@ -406,7 +417,7 @@ export default function Sidebar({
                 disabled={!text}
               >
                 <Trash2 size={16} />
-                <span>Очистить текст</span>
+                <span>{t.clearTextBtn || 'Очистить текст'}</span>
               </button>
             </div>
           </div>
@@ -416,13 +427,13 @@ export default function Sidebar({
         {activeTab === 'font' && (
           <div className="tab-pane">
             <div className="pane-header">
-              <h3>Почерк и шрифт</h3>
+              <h3>{t.tabFont || 'Почерк и шрифт'}</h3>
             </div>
 
             {/* Upload Custom Font */}
             <div className="control-group custom-font-box">
               <div className="group-title-row">
-                <label className="group-label">Свой рукописный шрифт</label>
+                <label className="group-label">{t.customFontTitle || 'Свой рукописный шрифт'}</label>
                 <span className="badge-small">.ttf, .otf, .woff</span>
               </div>
               <input
@@ -437,7 +448,7 @@ export default function Sidebar({
                 onClick={() => fontInputRef.current?.click()}
               >
                 <FolderUp size={18} />
-                <span>Загрузить свой шрифт с компьютера</span>
+                <span>{t.uploadFontFromPc || 'Загрузить свой шрифт с компьютера'}</span>
               </button>
 
               {userFonts.length > 0 && (
@@ -454,7 +465,7 @@ export default function Sidebar({
                         className="user-font-name"
                         style={{ fontFamily: uf.id }}
                       >
-                        {uf.name} (Загружен)
+                        {uf.name} ({t.loadedFontTag || 'Загружен'})
                       </span>
                       <button
                         className="delete-font-btn"
@@ -462,7 +473,7 @@ export default function Sidebar({
                           e.stopPropagation();
                           onRemoveUserFont(uf.id);
                         }}
-                        title="Удалить шрифт"
+                        title={t.deleteFontTitle || 'Удалить шрифт'}
                       >
                         <Trash2 size={14} />
                       </button>
@@ -474,7 +485,7 @@ export default function Sidebar({
 
             {/* Built-in Fonts */}
             <div className="control-group">
-              <label className="group-label">Базовые рукописные шрифты</label>
+              <label className="group-label">{t.baseFontsTitle || 'Базовые рукописные шрифты'}</label>
               <div className="font-grid">
                 {DEFAULT_FONTS.map((f) => (
                   <div
@@ -488,7 +499,7 @@ export default function Sidebar({
                       className="font-preview"
                       style={{ fontFamily: f.id }}
                     >
-                      Конспект лекции
+                      {t.fontPreviewSample || 'Конспект лекции'}
                     </span>
                     <span className="font-title">{f.name}</span>
                   </div>
@@ -500,7 +511,7 @@ export default function Sidebar({
             <div className="control-card">
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Размер шрифта</span>
+                  <span>{t.fontSizeLabel || 'Размер шрифта'}</span>
                   <span className="slider-val">{config.fontSize} px</span>
                 </div>
                 <input
@@ -515,7 +526,7 @@ export default function Sidebar({
 
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Наклон почерка</span>
+                  <span>{t.slantAngleLabel || 'Наклон почерка'}</span>
                   <span className="slider-val">
                     {config.slantAngle > 0 ? `+${config.slantAngle}°` : `${config.slantAngle}°`}
                   </span>
@@ -529,20 +540,20 @@ export default function Sidebar({
                   onChange={(e) => updateConfig('slantAngle', Number(e.target.value))}
                 />
                 <div className="slider-hints">
-                  <span>← Влево</span>
+                  <span>{t.slantLeft || '← Влево'}</span>
                   <button
                     className="tiny-link-btn"
                     onClick={() => updateConfig('slantAngle', 0)}
                   >
-                    Прямо (0°)
+                    {t.slantStraight || 'Прямо (0°)'}
                   </button>
-                  <span>Вправо →</span>
+                  <span>{t.slantRight || 'Вправо →'}</span>
                 </div>
               </div>
 
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Межстрочный интервал</span>
+                  <span>{t.lineHeightLabel || 'Межстрочный интервал'}</span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <input
                       type="number"
@@ -577,29 +588,29 @@ export default function Sidebar({
                     className="chip-btn"
                     onClick={() => updateConfig('lineHeight', 20)}
                   >
-                    20 px (Мин)
+                    {t.quick20Dense || '20 px (Мин)'}
                   </button>
                   <button
                     className="chip-btn"
                     onClick={() => updateConfig('lineHeight', 35)}
                   >
-                    35 px (1 кл.)
+                    {t.quick35Cell || '35 px (1 кл.)'}
                   </button>
                   <button
                     className="chip-btn"
                     onClick={() => updateConfig('lineHeight', 70)}
                   >
-                    70 px (2 кл.)
+                    {t.quick70Cell || '70 px (2 кл.)'}
                   </button>
                 </div>
                 <span className="slider-subtext">
-                  Совет: 20 px — плотные строки, 35 px — 1 клетка, 70 px — 2 клетки
+                  {t.lineHeightHint || 'Совет: 20 px — плотные строки, 35 px — 1 клетка, 70 px — 2 клетки'}
                 </span>
               </div>
 
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Межбуквенный интервал</span>
+                  <span>{t.letterSpacingLabel || 'Межбуквенный интервал'}</span>
                   <span className="slider-val">{config.letterSpacing} px</span>
                 </div>
                 <input
@@ -614,7 +625,7 @@ export default function Sidebar({
 
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Толщина ручки / Жирность</span>
+                  <span>{t.fontWeightLabel || 'Толщина ручки / Жирность'}</span>
                   <span className="slider-val">{config.fontWeight}</span>
                 </div>
                 <div className="segmented-control">
@@ -622,19 +633,19 @@ export default function Sidebar({
                     className={`segment-btn ${config.fontWeight === '400' ? 'active' : ''}`}
                     onClick={() => updateConfig('fontWeight', '400')}
                   >
-                    Обычная
+                    {t.weightNormal || 'Обычная'}
                   </button>
                   <button
                     className={`segment-btn ${config.fontWeight === '500' ? 'active' : ''}`}
                     onClick={() => updateConfig('fontWeight', '500')}
                   >
-                    Средняя
+                    {t.weightMedium || 'Средняя'}
                   </button>
                   <button
                     className={`segment-btn ${config.fontWeight === '700' ? 'active' : ''}`}
                     onClick={() => updateConfig('fontWeight', '700')}
                   >
-                    Жирная
+                    {t.weightBold || 'Жирная'}
                   </button>
                 </div>
               </div>
@@ -644,7 +655,7 @@ export default function Sidebar({
             <div className="control-card highlight-card">
               <div className="group-title-row">
                 <label className="group-label with-icon">
-                  <Maximize2 size={15} /> 3D Перспектива и ракурс (Трапеция)
+                  <Maximize2 size={15} /> {t.perspTrapezoidTitle || '3D Перспектива и ракурс (Трапеция)'}
                 </label>
                 {(config.perspectiveY !== 0 || config.perspectiveX !== 0 || config.textRotation !== 0 || config.lineSlope !== 0) && (
                   <button
@@ -656,7 +667,7 @@ export default function Sidebar({
                       updateConfig('lineSlope', 0);
                     }}
                   >
-                    <RotateCcw size={12} /> Сбросить 3D
+                    <RotateCcw size={12} /> {t.reset3dBtn || 'Сбросить 3D'}
                   </button>
                 )}
               </div>
@@ -664,7 +675,7 @@ export default function Sidebar({
               {/* Perspective Y: Trapezoid top narrower / bottom wider */}
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Трапеция (Верх уже / Низ шире)</span>
+                  <span>{t.perspTrapezoidLabel || 'Трапеция (Верх уже / Низ шире)'}</span>
                   <span className="slider-val">
                     {config.perspectiveY > 0 ? `+${config.perspectiveY}%` : `${config.perspectiveY || 0}%`}
                   </span>
@@ -678,26 +689,26 @@ export default function Sidebar({
                   onChange={(e) => updateConfig('perspectiveY', Number(e.target.value))}
                 />
                 <span className="slider-subtext">
-                  Верх текста сужается, а низ расширяется для соответствия фото тетради на столе
+                  {t.perspTrapezoidHint || 'Верх текста сужается, а низ расширяется для соответствия фото тетради на столе'}
                 </span>
                 <div className="quick-buttons-row">
                   <button
                     className="chip-btn"
                     onClick={() => updateConfig('perspectiveY', 0)}
                   >
-                    Прямо (0%)
+                    {t.perspStraight || 'Прямо (0%)'}
                   </button>
                   <button
                     className="chip-btn"
                     onClick={() => updateConfig('perspectiveY', 20)}
                   >
-                    Умеренный (+20%)
+                    {t.perspModerate || 'Умеренный (+20%)'}
                   </button>
                   <button
                     className="chip-btn"
                     onClick={() => updateConfig('perspectiveY', 35)}
                   >
-                    Стол (+35%)
+                    {t.perspDesk || 'Стол (+35%)'}
                   </button>
                 </div>
               </div>
@@ -705,7 +716,7 @@ export default function Sidebar({
               {/* Text Block Rotation */}
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Поворот текста (по строкам фото)</span>
+                  <span>{t.textRotationLabel || 'Поворот текста (по строкам фото)'}</span>
                   <span className="slider-val">
                     {config.textRotation > 0 ? `+${config.textRotation}°` : `${config.textRotation || 0}°`}
                   </span>
@@ -743,7 +754,7 @@ export default function Sidebar({
               {/* Line Slope / Skew Y */}
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Наклон строк вверх / вниз</span>
+                  <span>{t.lineSlopeLabel || 'Наклон строк вверх / вниз'}</span>
                   <span className="slider-val">{config.lineSlope || 0}°</span>
                 </div>
                 <input
@@ -759,7 +770,7 @@ export default function Sidebar({
               {/* Perspective X: side view */}
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Боковая перспектива (Сдвиг)</span>
+                  <span>{t.perspSideLabel || 'Боковая перспектива (Сдвиг)'}</span>
                   <span className="slider-val">{config.perspectiveX || 0}%</span>
                 </div>
                 <input
@@ -777,7 +788,7 @@ export default function Sidebar({
             <div className="control-card highlight-card">
               <div className="group-title-row">
                 <label className="group-label with-icon">
-                  <span>🌊</span> Искривление листа и бугорки (Неровная бумага)
+                  <span>🌊</span> {t.curvatureSectionTitle || 'Искривление листа и бугорки (Неровная бумага)'}
                 </label>
                 {(config.pageBulge !== 0 || config.bulgeCenterX !== 0 || config.ovalCurvature !== 0) && (
                   <button
@@ -788,7 +799,7 @@ export default function Sidebar({
                       updateConfig('ovalCurvature', 0);
                     }}
                   >
-                    <RotateCcw size={12} /> Выпрямить
+                    <RotateCcw size={12} /> {t.flattenBtn || 'Выпрямить'}
                   </button>
                 )}
               </div>
@@ -796,7 +807,7 @@ export default function Sidebar({
               {/* Page Bulge: vertical arc */}
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Бугорок / Прогиб строк (Дуга)</span>
+                  <span>{t.curvatureArcLabel || 'Бугорок / Прогиб строк (Дуга)'}</span>
                   <span className="slider-val">
                     {config.pageBulge > 0 ? `+${config.pageBulge} px` : `${config.pageBulge || 0} px`}
                   </span>
@@ -810,32 +821,32 @@ export default function Sidebar({
                   onChange={(e) => updateConfig('pageBulge', Number(e.target.value))}
                 />
                 <span className="slider-subtext">
-                  Выгибает строки дугой: вверх (бугорок на столе) или вниз (прогиб листа)
+                  {t.curvatureArcHint || 'Выгибает строки дугой: вверх (бугорок на столе) или вниз (прогиб листа)'}
                 </span>
                 <div className="quick-buttons-row">
                   <button
                     className="chip-btn"
                     onClick={() => updateConfig('pageBulge', 0)}
                   >
-                    Прямо (0)
+                    {t.curvatureStraight || 'Прямо (0)'}
                   </button>
                   <button
                     className="chip-btn"
                     onClick={() => updateConfig('pageBulge', 20)}
                   >
-                    Бугорок (+20px)
+                    {t.curvatureBulge20 || 'Бугорок (+20px)'}
                   </button>
                   <button
                     className="chip-btn"
                     onClick={() => updateConfig('pageBulge', 35)}
                   >
-                    Выпуклый (+35px)
+                    {t.curvatureBulge35 || 'Выпуклый (+35px)'}
                   </button>
                   <button
                     className="chip-btn"
                     onClick={() => updateConfig('pageBulge', -20)}
                   >
-                    Прогиб (-20px)
+                    {t.curvatureSag20 || 'Прогиб (-20px)'}
                   </button>
                 </div>
               </div>
@@ -843,7 +854,7 @@ export default function Sidebar({
               {/* Bulge Apex Shift: Notebook spine */}
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Смещение вершины изгиба (Корешок)</span>
+                  <span>{t.bulgeApexLabel || 'Смещение вершины изгиба (Корешок)'}</span>
                   <span className="slider-val">{config.bulgeCenterX || 0}%</span>
                 </div>
                 <input
@@ -859,19 +870,19 @@ export default function Sidebar({
                     className="chip-btn"
                     onClick={() => updateConfig('bulgeCenterX', -30)}
                   >
-                    ← Корешок слева (-30%)
+                    {t.spineLeft || '← Корешок слева (-30%)'}
                   </button>
                   <button
                     className="chip-btn"
                     onClick={() => updateConfig('bulgeCenterX', 0)}
                   >
-                    Центр (0%)
+                    {t.spineCenter || 'Центр (0%)'}
                   </button>
                   <button
                     className="chip-btn"
                     onClick={() => updateConfig('bulgeCenterX', 30)}
                   >
-                    Справа (+30%) →
+                    {t.spineRight || 'Справа (+30%) →'}
                   </button>
                 </div>
               </div>
@@ -879,7 +890,7 @@ export default function Sidebar({
               {/* Oval Curvature (Barrel distortion) */}
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Овал страницы (Бочка)</span>
+                  <span>{t.ovalBarrelLabel || 'Овал страницы (Бочка)'}</span>
                   <span className="slider-val">{config.ovalCurvature || 0}%</span>
                 </div>
                 <input
@@ -891,14 +902,14 @@ export default function Sidebar({
                   onChange={(e) => updateConfig('ovalCurvature', Number(e.target.value))}
                 />
                 <span className="slider-subtext">
-                  Широкие строки в середине страницы и сужение к краям (овальный контур)
+                  {t.ovalBarrelHint || 'Широкие строки в середине страницы и сужение к краям (овальный контур)'}
                 </span>
               </div>
             </div>
 
             {/* Ink color & realism */}
             <div className="control-card">
-              <label className="group-label">Цвет чернил ручки</label>
+              <label className="group-label">{t.inkColorLabel || 'Цвет чернил ручки'}</label>
               <div className="color-palette">
                 {INK_COLORS.map((col) => (
                   <button
@@ -911,7 +922,7 @@ export default function Sidebar({
                     {config.inkColor === col.value && <Check size={14} color="#fff" />}
                   </button>
                 ))}
-                <label className="custom-color-picker" title="Выбрать свой цвет">
+                <label className="custom-color-picker" title={t.customColorPicker || 'Выбрать свой цвет'}>
                   <input
                     type="color"
                     value={config.inkColor}
@@ -923,7 +934,7 @@ export default function Sidebar({
 
               <div className="slider-row" style={{ marginTop: '16px' }}>
                 <div className="slider-label-wrap">
-                  <span>Плотность нажима чернил</span>
+                  <span>{t.inkOpacityLabel2 || 'Плотность нажима чернил'}</span>
                   <span className="slider-val">{Math.round(config.inkOpacity * 100)}%</span>
                 </div>
                 <input
@@ -939,7 +950,7 @@ export default function Sidebar({
               <div className="slider-row">
                 <div className="slider-label-wrap">
                   <span className="with-icon">
-                    <Sparkles size={16} className="sparkle-icon" /> Живой почерк (неровности)
+                    <Sparkles size={16} className="sparkle-icon" /> {t.jitterTitle || 'Живой почерк (неровности)'}
                   </span>
                   <span className="slider-val">{Math.round(config.jitterIntensity * 100)}%</span>
                 </div>
@@ -952,7 +963,7 @@ export default function Sidebar({
                   onChange={(e) => updateConfig('jitterIntensity', Number(e.target.value))}
                 />
                 <span className="slider-subtext">
-                  Имитирует дрожание руки, живую вариацию угла букв и высоты строк
+                  {t.jitterHint || 'Имитирует дрожание руки, живую вариацию угла букв и высоты строк'}
                 </span>
               </div>
             </div>
@@ -963,12 +974,12 @@ export default function Sidebar({
         {activeTab === 'paper' && (
           <div className="tab-pane">
             <div className="pane-header">
-              <h3>Фон и фото тетради</h3>
+              <h3>{t.tabPaper || 'Фон и фото тетради'}</h3>
             </div>
 
             {/* Custom Photo Upload */}
             <div className="control-group upload-section">
-              <label className="group-label">Своё фото тетради</label>
+              <label className="group-label">{t.uploadPhotoBtn || 'Своё фото тетради'}</label>
               <input
                 type="file"
                 ref={photoInputRef}
@@ -981,7 +992,7 @@ export default function Sidebar({
                 <div className="loaded-photo-card">
                   <div className="photo-thumb-wrap">
                     <img src={customImage} alt="Uploaded notebook" className="photo-thumb" />
-                    <span className="photo-badge">Ваше фото активно</span>
+                    <span className="photo-badge">{t.photoYourActive || 'Ваше фото активно'}</span>
                   </div>
                   <div className="photo-actions">
                     <button
@@ -989,15 +1000,15 @@ export default function Sidebar({
                       onClick={() => photoInputRef.current?.click()}
                     >
                       <Upload size={14} />
-                      <span>Заменить</span>
+                      <span>{t.photoReplace || 'Заменить'}</span>
                     </button>
                     <button
                       className="danger-btn"
                       onClick={onRemovePhoto}
-                      title="Удалить фото и вернуться к пресетам"
+                      title={t.photoDeleteTitle || 'Удалить фото и вернуться к пресетам'}
                     >
                       <Trash2 size={14} />
-                      <span>Удалить</span>
+                      <span>{t.photoDelete || 'Удалить'}</span>
                     </button>
                   </div>
                 </div>
@@ -1007,37 +1018,37 @@ export default function Sidebar({
                   onClick={() => photoInputRef.current?.click()}
                 >
                   <Upload size={28} />
-                  <p className="drop-title">Нажмите или перетащите фото сюда</p>
-                  <p className="drop-sub">JPG, PNG, WebP (фото настоящего тетрадного листа)</p>
+                  <p className="drop-title">{t.photoDropTitle || 'Нажмите или перетащите фото сюда'}</p>
+                  <p className="drop-sub">{t.photoDropSub || 'JPG, PNG, WebP (фото настоящего тетрадного листа)'}</p>
                 </div>
               )}
             </div>
 
             {/* Page Format (1 sheet vs 2-page spread) */}
             <div className="control-group">
-              <label className="group-label">Формат тетради</label>
+              <label className="group-label">{t.photoFormatTitle || 'Формат тетради'}</label>
               <div className="segmented-control">
                 <button
                   className={`segment-btn ${config.pageFormat === 'portrait' ? 'active' : ''}`}
                   onClick={() => onSetPageFormat && onSetPageFormat('portrait')}
-                  title="Один вертикальный лист (1400×1980)"
+                  title={t.photoFormat1SheetTitle || 'Один вертикальный лист (1400×1980)'}
                 >
-                  📄 1 лист
+                  {t.photoFormat1Sheet || '📄 1 лист'}
                 </button>
                 <button
                   className={`segment-btn ${config.pageFormat === 'spread' ? 'active' : ''}`}
                   onClick={() => onSetPageFormat && onSetPageFormat('spread')}
-                  title="Разворот на 2 страницы (2400×1600)"
+                  title={t.photoFormatSpreadTitle || 'Разворот на 2 страницы (2400×1600)'}
                 >
-                  📖 2 листа (Разворот)
+                  {t.photoFormatSpread || '📖 2 листа (Разворот)'}
                 </button>
                 {customImage && (
                   <button
                     className={`segment-btn ${config.pageFormat === 'auto' ? 'active' : ''}`}
                     onClick={() => onSetPageFormat && onSetPageFormat('auto')}
-                    title="Адаптировать холст под пропорции загруженного фото без обрезки"
+                    title={t.photoFormatAutoTitle || 'Адаптировать холст под пропорции загруженного фото без обрезки'}
                   >
-                    📷 По фото (100%)
+                    {t.photoFormatAuto || '📷 По фото (100%)'}
                   </button>
                 )}
               </div>
@@ -1047,28 +1058,28 @@ export default function Sidebar({
             {customImage && (
               <div className="control-group">
                 <div className="group-title-row">
-                  <label className="group-label">Отображение фото</label>
+                  <label className="group-label">{t.photoFitLabel || 'Отображение фото'}</label>
                   <button
                     className="tiny-link-btn"
                     onClick={() => onSetPageFormat && onSetPageFormat('auto')}
                   >
-                    Подогнать холст под фото
+                    {t.photoFitCanvasBtn || 'Подогнать холст под фото'}
                   </button>
                 </div>
                 <div className="segmented-control">
                   <button
                     className={`segment-btn ${config.photoFit === 'contain' ? 'active' : ''}`}
                     onClick={() => updateConfig('photoFit', 'contain')}
-                    title="Вписать фото полностью — ни один край не будет обрезан"
+                    title={t.photoFitContainTitle || 'Вписать фото полностью — ни один край не будет обрезан'}
                   >
-                    Вписать целиком (100% без обрезки)
+                    {t.photoFitContain || 'Вписать целиком (100% без обрезки)'}
                   </button>
                   <button
                     className={`segment-btn ${config.photoFit === 'cover' ? 'active' : ''}`}
                     onClick={() => updateConfig('photoFit', 'cover')}
-                    title="Заполнить холст целиком"
+                    title={t.photoFitCoverTitle || 'Заполнить холст целиком'}
                   >
-                    Заполнить холст (Cover)
+                    {t.photoFitCover || 'Заполнить холст (Cover)'}
                   </button>
                 </div>
               </div>
@@ -1077,7 +1088,9 @@ export default function Sidebar({
             {/* Paper Presets (Active if no custom photo or as reference) */}
             {!customImage && (
               <div className="control-group">
-                <label className="group-label">Встроенные тетрадные листы ({PAPER_PRESETS.length})</label>
+                <label className="group-label">
+                  {t.builtinSheetsLabel ? t.builtinSheetsLabel.replace('{count}', PAPER_PRESETS.length) : `Встроенные тетрадные листы (${PAPER_PRESETS.length})`}
+                </label>
                 <div className="preset-grid">
                   {PAPER_PRESETS.map((preset) => (
                     <button
@@ -1093,7 +1106,7 @@ export default function Sidebar({
                 </div>
 
                 <div className="toggle-row" style={{ marginTop: '12px' }}>
-                  <label className="toggle-label">Красная линия полей</label>
+                  <label className="toggle-label">{t.marginLineLabel || 'Красная линия полей'}</label>
                   <input
                     type="checkbox"
                     className="toggle-checkbox"
@@ -1108,20 +1121,20 @@ export default function Sidebar({
             <div className="control-card">
               <div className="group-title-row">
                 <label className="group-label">
-                  {customImage ? 'Регулировка фото тетради' : 'Коррекция бумажного фона'}
+                  {customImage ? (t.adjustmentsPhotoLabel || 'Регулировка фото тетради') : (t.adjustmentsLabel || 'Коррекция бумажного фона')}
                 </label>
                 <button
                   className="tiny-link-btn"
                   onClick={onResetPhotoAdjustments}
                 >
-                  <RotateCcw size={12} /> Сбросить
+                  <RotateCcw size={12} /> {t.resetBtnSmall || 'Сбросить'}
                 </button>
               </div>
 
               {/* Brightness */}
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Яркость (отбеливание)</span>
+                  <span>{t.photoBrightnessLabel || 'Яркость (отбеливание)'}</span>
                   <span className="slider-val">{config.photoBrightness}%</span>
                 </div>
                 <input
@@ -1137,7 +1150,7 @@ export default function Sidebar({
               {/* Contrast */}
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Контраст</span>
+                  <span>{t.photoContrastLabel || 'Контраст'}</span>
                   <span className="slider-val">{config.photoContrast}%</span>
                 </div>
                 <input
@@ -1153,7 +1166,7 @@ export default function Sidebar({
               {/* Saturation */}
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Насыщенность</span>
+                  <span>{t.photoSaturationLabel || 'Насыщенность'}</span>
                   <span className="slider-val">{config.photoSaturation}%</span>
                 </div>
                 <input
@@ -1169,7 +1182,7 @@ export default function Sidebar({
               {/* Rotation */}
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Поворот фото (выравнивание)</span>
+                  <span>{t.photoRotationLabel || 'Поворот фото (выравнивание)'}</span>
                   <span className="slider-val">{config.photoRotation}°</span>
                 </div>
                 <input
@@ -1205,7 +1218,7 @@ export default function Sidebar({
               {/* Scale / Zoom */}
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Масштаб фото (Зум)</span>
+                  <span>{t.photoScaleLabel || 'Масштаб фото (Зум)'}</span>
                   <span className="slider-val">{Math.round(config.photoScale * 100)}%</span>
                 </div>
                 <input
@@ -1221,7 +1234,7 @@ export default function Sidebar({
               {/* Pan X and Y */}
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Смещение по горизонтали (X)</span>
+                  <span>{t.photoOffsetXLabel || 'Смещение по горизонтали (X)'}</span>
                   <span className="slider-val">{config.photoOffsetX} px</span>
                 </div>
                 <input
@@ -1236,7 +1249,7 @@ export default function Sidebar({
 
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Смещение по вертикали (Y)</span>
+                  <span>{t.photoOffsetYLabel || 'Смещение по вертикали (Y)'}</span>
                   <span className="slider-val">{config.photoOffsetY} px</span>
                 </div>
                 <input
@@ -1256,60 +1269,60 @@ export default function Sidebar({
         {activeTab === 'layout' && (
           <div className="tab-pane">
             <div className="pane-header">
-              <h3>Поля и выравнивание</h3>
+              <h3>{t.tabLayout || 'Поля и выравнивание'}</h3>
             </div>
 
             <div className="control-card">
               <div className="drag-hint-box">
                 <Move size={16} />
                 <span>
-                  <strong>Совет:</strong> Вы можете просто зажать и перетаскивать текст мышью прямо по листу тетради!
+                  <strong>{lang === 'en' ? 'Tip:' : 'Совет:'}</strong> {t.dragTextAdvice || 'Вы можете просто зажать и перетаскивать текст мышью прямо по листу тетради!'}
                 </span>
               </div>
 
               {/* Text Alignment */}
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Выравнивание текста</span>
+                  <span>{t.textAlignLabel || 'Выравнивание текста'}</span>
                   <span className="slider-val">
-                    {(!config.textAlign || config.textAlign === 'left') && 'По левому краю'}
-                    {config.textAlign === 'center' && 'По центру'}
-                    {config.textAlign === 'right' && 'По правому краю'}
-                    {config.textAlign === 'justify' && 'По ширине'}
+                    {(!config.textAlign || config.textAlign === 'left') && (t.alignLeft || 'По левому краю')}
+                    {config.textAlign === 'center' && (t.alignCenter || 'По центру')}
+                    {config.textAlign === 'right' && (t.alignRight || 'По правому краю')}
+                    {config.textAlign === 'justify' && (t.alignJustify || 'По ширине')}
                   </span>
                 </div>
                 <div className="segmented-control">
                   <button
                     className={`segment-btn ${(!config.textAlign || config.textAlign === 'left') ? 'active' : ''}`}
                     onClick={() => updateConfig('textAlign', 'left')}
-                    title="По левому краю (стандартно для тетради)"
+                    title={t.alignLeft || 'По левому краю'}
                   >
                     <AlignLeft size={14} />
-                    <span>Влево</span>
+                    <span>{lang === 'en' ? 'Left' : 'Влево'}</span>
                   </button>
                   <button
                     className={`segment-btn ${config.textAlign === 'center' ? 'active' : ''}`}
                     onClick={() => updateConfig('textAlign', 'center')}
-                    title="По центру"
+                    title={t.alignCenter || 'По центру'}
                   >
                     <AlignCenter size={14} />
-                    <span>Центр</span>
+                    <span>{lang === 'en' ? 'Center' : 'Центр'}</span>
                   </button>
                   <button
                     className={`segment-btn ${config.textAlign === 'right' ? 'active' : ''}`}
                     onClick={() => updateConfig('textAlign', 'right')}
-                    title="По правому краю"
+                    title={t.alignRight || 'По правому краю'}
                   >
                     <AlignRight size={14} />
-                    <span>Вправо</span>
+                    <span>{lang === 'en' ? 'Right' : 'Вправо'}</span>
                   </button>
                   <button
                     className={`segment-btn ${config.textAlign === 'justify' ? 'active' : ''}`}
                     onClick={() => updateConfig('textAlign', 'justify')}
-                    title="По ширине страницы"
+                    title={t.alignJustify || 'По ширине'}
                   >
                     <AlignJustify size={14} />
-                    <span>По ширине</span>
+                    <span>{lang === 'en' ? 'Justify' : 'По ширине'}</span>
                   </button>
                 </div>
               </div>
@@ -1317,21 +1330,21 @@ export default function Sidebar({
               {/* Columns mode (1 or 2 pages) */}
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Колонки текста (Разворот)</span>
-                  <span className="slider-val">{config.columnsCount === 2 ? '2 страницы' : '1 колонка'}</span>
+                  <span>{t.colsSpreadLabel || 'Колонки текста (Разворот)'}</span>
+                  <span className="slider-val">{config.columnsCount === 2 ? (lang === 'en' ? '2 pages' : '2 страницы') : (t.cols1Col || '1 колонка')}</span>
                 </div>
                 <div className="segmented-control">
                   <button
                     className={`segment-btn ${config.columnsCount !== 2 ? 'active' : ''}`}
                     onClick={() => updateConfig('columnsCount', 1)}
                   >
-                    1 колонка
+                    {t.cols1Col || '1 колонка'}
                   </button>
                   <button
                     className={`segment-btn ${config.columnsCount === 2 ? 'active' : ''}`}
                     onClick={() => updateConfig('columnsCount', 2)}
                   >
-                    📖 2 колонки (Разворот)
+                    {t.cols2Col || '📖 2 колонки (Разворот)'}
                   </button>
                 </div>
                 <div className="quick-buttons-row" style={{ marginTop: '4px' }}>
@@ -1342,9 +1355,9 @@ export default function Sidebar({
                       updateConfig('marginLeft', Math.round(config.canvasWidth * 0.06));
                       updateConfig('marginRight', Math.round(config.canvasWidth / 2 + 50));
                     }}
-                    title="Разместить текст только на левой странице"
+                    title={t.leftSheetTitle || 'Разместить текст только на левой странице'}
                   >
-                    ◀ Левый лист
+                    {t.leftSheetBtn || '◀ Левый лист'}
                   </button>
                   <button
                     className="chip-btn"
@@ -1353,9 +1366,9 @@ export default function Sidebar({
                       updateConfig('marginLeft', Math.round(config.canvasWidth * 0.06));
                       updateConfig('marginRight', Math.round(config.canvasWidth * 0.06));
                     }}
-                    title="Текст на оба листа разворота"
+                    title={t.bothSheetsTitle || 'Текст на оба листа разворота'}
                   >
-                    Оба листа
+                    {t.bothSheetsBtn || 'Оба листа'}
                   </button>
                   <button
                     className="chip-btn"
@@ -1364,9 +1377,9 @@ export default function Sidebar({
                       updateConfig('marginLeft', Math.round(config.canvasWidth / 2 + 50));
                       updateConfig('marginRight', Math.round(config.canvasWidth * 0.06));
                     }}
-                    title="Разместить текст только на правой странице"
+                    title={t.rightSheetTitle || 'Разместить текст только на правой странице'}
                   >
-                    Правый лист ▶
+                    {t.rightSheetBtn || 'Правый лист ▶'}
                   </button>
                 </div>
               </div>
@@ -1374,7 +1387,7 @@ export default function Sidebar({
               {config.columnsCount === 2 && (
                 <div className="slider-row">
                   <div className="slider-label-wrap">
-                    <span>Зазор между страницами (Корешок)</span>
+                    <span>{t.gutterLabel || 'Зазор между страницами (Корешок)'}</span>
                     <span className="slider-val">{config.columnGap || 100} px</span>
                   </div>
                   <input
@@ -1390,7 +1403,7 @@ export default function Sidebar({
 
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Отступ слева (X)</span>
+                  <span>{t.marginLeftLabel || 'Отступ слева (X)'}</span>
                   <span className="slider-val">{config.marginLeft} px</span>
                 </div>
                 <input
@@ -1406,20 +1419,20 @@ export default function Sidebar({
                     className="chip-btn"
                     onClick={() => updateConfig('marginLeft', 40)}
                   >
-                    К левому краю (40px)
+                    {t.marginLeftChip || 'К левому краю (40px)'}
                   </button>
                   <button
                     className="chip-btn"
                     onClick={() => updateConfig('marginLeft', 290)}
                   >
-                    Школьные поля (290px)
+                    {t.marginSchoolChip || 'Школьные поля (290px)'}
                   </button>
                 </div>
               </div>
 
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Отступ сверху (Margin Top)</span>
+                  <span>{t.marginTopLabel || 'Отступ сверху (Margin Top)'}</span>
                   <span className="slider-val">{config.marginTop} px</span>
                 </div>
                 <input
@@ -1434,7 +1447,7 @@ export default function Sidebar({
 
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Отступ справа (Margin Right)</span>
+                  <span>{t.marginRightLabel || 'Отступ справа (Margin Right)'}</span>
                   <span className="slider-val">{config.marginRight} px</span>
                 </div>
                 <input
@@ -1449,7 +1462,7 @@ export default function Sidebar({
 
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Отступ снизу (Margin Bottom)</span>
+                  <span>{t.marginBottomLabel || 'Отступ снизу (Margin Bottom)'}</span>
                   <span className="slider-val">{config.marginBottom} px</span>
                 </div>
                 <input
@@ -1464,7 +1477,7 @@ export default function Sidebar({
 
               <div className="slider-row">
                 <div className="slider-label-wrap">
-                  <span>Красная строка (Абзацный отступ)</span>
+                  <span>{t.paragraphIndentLabel || 'Красная строка (Абзацный отступ)'}</span>
                   <span className="slider-val">{config.paragraphIndent} px</span>
                 </div>
                 <input
@@ -1479,7 +1492,7 @@ export default function Sidebar({
             </div>
 
             <div className="preset-buttons-box">
-              <span className="preset-label">Быстрые пресеты полей:</span>
+              <span className="preset-label">{t.quickMarginsLabel || 'Быстрые пресеты полей:'}</span>
               <div className="chip-row">
                 <button
                   className="chip-btn"
@@ -1494,7 +1507,7 @@ export default function Sidebar({
                     }));
                   }}
                 >
-                  Стандартная школьная тетрадь
+                  {t.marginsPresetSchool || 'Стандартная школьная тетрадь'}
                 </button>
                 <button
                   className="chip-btn"
@@ -1509,7 +1522,7 @@ export default function Sidebar({
                     }));
                   }}
                 >
-                  Узкие поля (А4)
+                  {t.marginsPresetNarrow || 'Узкие поля (А4)'}
                 </button>
               </div>
             </div>
@@ -1519,10 +1532,10 @@ export default function Sidebar({
               <button
                 className="secondary-btn w-full reset-all-btn"
                 onClick={onResetAll}
-                title="Сбросить все настройки текста, полей и наклона к начальным"
+                title={t.resetAllDefaultsTitle || 'Сбросить все настройки текста, полей и наклона к начальным'}
               >
                 <RotateCcw size={16} />
-                <span>Сбросить все настройки по умолчанию</span>
+                <span>{t.resetAllDefaults || 'Сбросить все настройки по умолчанию'}</span>
               </button>
             </div>
           </div>
@@ -1532,21 +1545,21 @@ export default function Sidebar({
         {activeTab === 'presets' && (
           <div className="tab-pane">
             <div className="pane-header">
-              <h3>Пресеты настроек</h3>
+              <h3>{t.tabPresets || 'Пресеты настроек'}</h3>
             </div>
 
             {/* 1. Save Current Preset */}
             <div className="control-card save-preset-card">
-              <label className="group-label">Сохранить текущие настройки как пресет</label>
+              <label className="group-label">{t.saveCurrentAsPresetTitle || 'Сохранить текущие настройки как пресет'}</label>
               <p className="slider-subtext" style={{ marginBottom: '12px' }}>
-                Сохраните текущий шрифт, межстрочный интервал, цвет чернил, поля и 3D-наклон. В будущем вы сможете применить этот стиль в 1 клик!
+                {t.savePresetExpl || 'Сохраните текущий шрифт, межстрочный интервал, цвет чернил, поля и 3D-наклон. В будущем вы сможете применить этот стиль в 1 клик!'}
               </p>
 
               <div className="save-preset-form">
                 <input
                   type="text"
                   className="preset-name-input"
-                  placeholder="Название пресета (например: Мой конспект)..."
+                  placeholder={t.savePresetInputPlaceholder || 'Название пресета (например: Мой конспект)...'}
                   value={newPresetName}
                   onChange={(e) => setNewPresetName(e.target.value)}
                   onKeyDown={(e) => {
@@ -1567,19 +1580,19 @@ export default function Sidebar({
                       setPresetSaveSuccess(true);
                       setTimeout(() => setPresetSaveSuccess(false), 2500);
                     } else {
-                      alert('Пожалуйста, введите название пресета');
+                      alert(t.pleaseEnterPresetName || 'Пожалуйста, введите название пресета');
                     }
                   }}
                 >
                   <Save size={15} />
-                  <span>Сохранить пресет</span>
+                  <span>{t.savePresetBtn || 'Сохранить пресет'}</span>
                 </button>
               </div>
 
               {presetSaveSuccess && (
                 <div className="preset-save-toast">
                   <Check size={15} />
-                  <span>Пресет успешно сохранён! Теперь он доступен в списке ниже.</span>
+                  <span>{t.presetSavedToast || 'Пресет успешно сохранён! Теперь он доступен в списке ниже.'}</span>
                 </div>
               )}
             </div>
@@ -1588,7 +1601,7 @@ export default function Sidebar({
             <div className="control-card">
               <div className="slider-label-wrap" style={{ marginBottom: '10px' }}>
                 <span className="group-label" style={{ margin: 0 }}>
-                  Мои сохранённые пресеты ({userPresets?.length || 0})
+                  {t.mySavedPresets ? t.mySavedPresets.replace('{count}', userPresets?.length || 0) : `Мои сохранённые пресеты (${userPresets?.length || 0})`}
                 </span>
                 <div>
                   <input
@@ -1607,10 +1620,10 @@ export default function Sidebar({
                   <button
                     className="tiny-link-btn"
                     onClick={() => presetFileInputRef.current?.click()}
-                    title="Загрузить пресет из файла .json"
+                    title="JSON import"
                   >
                     <FolderUp size={13} />
-                    <span>Импорт .json</span>
+                    <span>{t.importJsonBtn || 'Импорт .json'}</span>
                   </button>
                 </div>
               </div>
@@ -1618,9 +1631,9 @@ export default function Sidebar({
               {(!userPresets || userPresets.length === 0) ? (
                 <div className="empty-presets-box">
                   <Bookmark size={26} className="empty-icon" />
-                  <p className="empty-title">У вас пока нет сохранённых пресетов</p>
+                  <p className="empty-title">{t.noPresetsTitle || 'У вас пока нет сохранённых пресетов'}</p>
                   <p className="empty-sub">
-                    Настройте стиль листа и нажмите <strong>«Сохранить пресет»</strong> выше!
+                    {t.noPresetsSub || 'Настройте стиль листа и нажмите «Сохранить пресет» выше!'}
                   </p>
                 </div>
               ) : (
@@ -1636,10 +1649,10 @@ export default function Sidebar({
                       </div>
 
                       <div className="preset-tags-row">
-                        <span className="preset-tag">Шрифт: {preset.config?.fontFamily || 'Caveat'}</span>
-                        <span className="preset-tag">Размер: {preset.config?.fontSize || 42}px</span>
-                        <span className="preset-tag">Строки: {preset.config?.lineHeight || 70}px</span>
-                        <span className="preset-tag">Поля: {preset.config?.marginLeft || 290}px</span>
+                        <span className="preset-tag">{t.tagFont || 'Шрифт:'} {preset.config?.fontFamily || 'Caveat'}</span>
+                        <span className="preset-tag">{preset.config?.fontSize || 42}px</span>
+                        <span className="preset-tag">{t.tagLine || 'Строка:'} {preset.config?.lineHeight || 70}px</span>
+                        <span className="preset-tag">{preset.config?.marginLeft || 290}px</span>
                       </div>
 
                       <div className="preset-actions-row">
@@ -1654,31 +1667,31 @@ export default function Sidebar({
                           {appliedPresetId === preset.id ? (
                             <>
                               <Check size={13} />
-                              <span>Применён!</span>
+                              <span>{t.appliedToast || 'Применён!'}</span>
                             </>
                           ) : (
                             <>
                               <Check size={13} />
-                              <span>Применить</span>
+                              <span>{t.applyBtn || 'Применить'}</span>
                             </>
                           )}
                         </button>
                         <button
                           className="chip-btn"
                           onClick={() => onExportPreset && onExportPreset(preset)}
-                          title="Скачать файл настроек (.json)"
+                          title="JSON export"
                         >
                           <Download size={13} />
-                          <span>Файл</span>
+                          <span>{t.exportJsonBtn || 'Файл'}</span>
                         </button>
                         <button
                           className="chip-btn danger-hover"
                           onClick={() => {
-                            if (window.confirm(`Удалить пресет "${preset.name}"?`)) {
+                            if (window.confirm(t.deletePresetConfirm ? t.deletePresetConfirm.replace('{name}', preset.name) : `Удалить пресет "${preset.name}"?`)) {
                               onDeletePreset && onDeletePreset(preset.id);
                             }
                           }}
-                          title="Удалить пресет"
+                          title={t.deleteBlock || 'Удалить'}
                         >
                           <Trash2 size={13} />
                         </button>
@@ -1693,25 +1706,44 @@ export default function Sidebar({
             <div className="control-card">
               <div className="slider-label-wrap" style={{ marginBottom: '8px' }}>
                 <label className="group-label" style={{ margin: 0 }}>
-                  Готовые встроенные шаблоны ({BUILTIN_PRESETS.length})
+                  {t.builtinTemplatesTitle ? t.builtinTemplatesTitle.replace('{count}', builtinPresets.length) : `Готовые встроенные шаблоны (${builtinPresets.length})`}
                 </label>
               </div>
 
               {/* Category Filter Chips */}
               <div className="category-filter-chips">
-                {['all', 'Школа', 'Университет', 'Наука', 'Языки', 'Планер', '3D Эффект'].map((cat) => (
+                {(lang === 'en'
+                  ? [
+                      { id: 'all', label: t.catAll || 'All Templates' },
+                      { id: 'School', label: t.catSchool || 'School' },
+                      { id: 'University', label: t.catUni || 'University' },
+                      { id: 'Science', label: t.catScience || 'Science' },
+                      { id: 'Languages', label: t.catLanguages || 'Languages' },
+                      { id: 'Planner', label: t.catPlanner || 'Planner' },
+                      { id: '3D Effect', label: t.cat3D || '3D Effect' },
+                    ]
+                  : [
+                      { id: 'all', label: t.catAll || 'Все шаблоны' },
+                      { id: 'Школа', label: t.catSchool || 'Школа' },
+                      { id: 'Университет', label: t.catUni || 'Университет' },
+                      { id: 'Наука', label: t.catScience || 'Наука' },
+                      { id: 'Языки', label: t.catLanguages || 'Языки' },
+                      { id: 'Планер', label: t.catPlanner || 'Планер' },
+                      { id: '3D Эффект', label: t.cat3D || '3D Эффект' },
+                    ]
+                ).map((cat) => (
                   <button
-                    key={cat}
-                    className={`category-pill ${selectedCategory === cat ? 'active' : ''}`}
-                    onClick={() => setSelectedCategory(cat)}
+                    key={cat.id}
+                    className={`category-pill ${selectedCategory === cat.id ? 'active' : ''}`}
+                    onClick={() => setSelectedCategory(cat.id)}
                   >
-                    {cat === 'all' ? 'Все шаблоны' : cat}
+                    {cat.label}
                   </button>
                 ))}
               </div>
 
               <div className="presets-list">
-                {BUILTIN_PRESETS
+                {builtinPresets
                   .filter((p) => selectedCategory === 'all' || p.category === selectedCategory)
                   .map((preset) => (
                     <div key={preset.id} className="preset-item-card builtin">
@@ -1724,22 +1756,22 @@ export default function Sidebar({
                       <p className="preset-item-desc">{preset.description}</p>
 
                       <div className="preset-tags-row">
-                        <span className="preset-tag">Шрифт: {preset.config?.fontFamily || 'Caveat'}</span>
+                        <span className="preset-tag">{t.tagFont || 'Шрифт:'} {preset.config?.fontFamily || 'Caveat'}</span>
                         <span className="preset-tag">
-                          Лист:{' '}
+                          {t.tagPaper || 'Лист:'}{' '}
                           {preset.config?.preset === 'grid'
-                            ? 'Клетка'
+                            ? (t.paperGrid || 'Клетка')
                             : preset.config?.preset === 'lined'
-                            ? 'Линейка'
+                            ? (t.paperLined || 'Линейка')
                             : preset.config?.preset === 'slanted'
-                            ? 'Косая'
+                            ? (t.paperSlanted || 'Косая')
                             : preset.config?.preset === 'dots'
-                            ? 'Точки'
+                            ? (t.paperDots || 'Точки')
                             : preset.config?.preset === 'vintage'
-                            ? 'Крафт'
-                            : 'Лист'}
+                            ? (t.paperVintage || 'Крафт')
+                            : (t.paperBlank || 'Лист')}
                         </span>
-                        <span className="preset-tag">Строка: {preset.config?.lineHeight || 70}px</span>
+                        <span className="preset-tag">{t.tagLine || 'Строка:'} {preset.config?.lineHeight || 70}px</span>
                       </div>
 
                       <div className="preset-actions-row">
@@ -1754,13 +1786,12 @@ export default function Sidebar({
                               setAppliedMode(null);
                             }, 2000);
                           }}
-                          title="Применить оформление тетради и вставить примерный конспект"
                         >
                           <Check size={13} />
                           <span>
                             {appliedPresetId === preset.id && appliedMode === 'full'
-                              ? 'Шаблон и текст загружены!'
-                              : 'Применить всё (стиль + текст)'}
+                              ? (t.appliedAllToast || 'Шаблон и текст загружены!')
+                              : (t.applyAllBtn || 'Применить всё (стиль + текст)')}
                           </span>
                         </button>
                         <button
@@ -1774,12 +1805,11 @@ export default function Sidebar({
                               setAppliedMode(null);
                             }, 2000);
                           }}
-                          title="Применить только параметры тетради и шрифт, оставив ваш текст"
                         >
                           <span>
                             {appliedPresetId === preset.id && appliedMode === 'style'
-                              ? 'Стиль применён!'
-                              : 'Только стиль'}
+                              ? (t.appliedStyleToast || 'Стиль применён!')
+                              : (t.applyStyleOnlyBtn || 'Только стиль')}
                           </span>
                         </button>
                       </div>
@@ -1794,7 +1824,7 @@ export default function Sidebar({
         {activeTab === 'export' && (
           <div className="tab-pane">
             <div className="pane-header">
-              <h3>Экспорт и сохранение</h3>
+              <h3>{t.exportSectionTitle || 'Экспорт и сохранение'}</h3>
             </div>
 
             <div className="export-cards-grid">
@@ -1803,8 +1833,8 @@ export default function Sidebar({
                   <Download size={22} />
                 </div>
                 <div className="export-card-info">
-                  <h4>Скачать как PNG</h4>
-                  <p>Текущая страница в сверхвысоком разрешении (1400×1980 px)</p>
+                  <h4>{t.exportPngTitle || 'Скачать как PNG'}</h4>
+                  <p>{t.exportPngDesc || 'Текущая страница в сверхвысоком разрешении (1400×1980 px)'}</p>
                 </div>
               </div>
 
@@ -1813,8 +1843,8 @@ export default function Sidebar({
                   <Download size={22} />
                 </div>
                 <div className="export-card-info">
-                  <h4>Скачать как JPG</h4>
-                  <p>Оптимизированный размер файла для отправки учителю или в мессенджер</p>
+                  <h4>{t.exportJpgTitle || 'Скачать как JPG'}</h4>
+                  <p>{t.exportJpgDesc || 'Оптимизированный размер файла для отправки учителю или в мессенджер'}</p>
                 </div>
               </div>
 
@@ -1823,8 +1853,8 @@ export default function Sidebar({
                   <Layers size={22} />
                 </div>
                 <div className="export-card-info">
-                  <h4>Сохранить все страницы в PDF</h4>
-                  <p>Скомпилировать весь конспект (все страницы) в один PDF файл</p>
+                  <h4>{t.exportPdfTitle || 'Сохранить весь конспект в PDF'}</h4>
+                  <p>{t.exportPdfDesc || 'Все страницы документа в одном готовом PDF-файле A4'}</p>
                 </div>
               </div>
 
@@ -1833,8 +1863,8 @@ export default function Sidebar({
                   <Download size={22} />
                 </div>
                 <div className="export-card-info">
-                  <h4>Распечатать</h4>
-                  <p>Открыть стандартное окно печати браузера</p>
+                  <h4>{t.exportPrintTitle || 'Распечатать'}</h4>
+                  <p>{t.exportPrintDesc || 'Прямая печать через диалоговое окно браузера (Ctrl+P)'}</p>
                 </div>
               </div>
             </div>

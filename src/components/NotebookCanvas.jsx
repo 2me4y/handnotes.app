@@ -28,6 +28,7 @@ import {
   ZoomIn,
   ZoomOut,
 } from 'lucide-react';
+import { TRANSLATIONS } from '../utils/i18n';
 
 export default function NotebookCanvas({
   config,
@@ -46,7 +47,10 @@ export default function NotebookCanvas({
   onUploadPhoto,
   onSetPageFormat,
   onResetAll,
+  lang = 'ru',
+  t: propT,
 }) {
+  const t = propT || TRANSLATIONS[lang] || TRANSLATIONS.ru;
   const containerRef = useRef(null);
   const [isDraggingText, setIsDraggingText] = useState(false);
   const [isResizingRight, setIsResizingRight] = useState(false);
@@ -555,7 +559,7 @@ export default function NotebookCanvas({
               <div className="canvas-blocks-switcher">
                 <span className="blocks-switcher-label">
                   <Layers size={13} />
-                  <span>Блоки ({textBlocks.length}):</span>
+                  <span>{t.canvasBlocksLabel ? t.canvasBlocksLabel.replace('{count}', textBlocks.length) : `Блоки (${textBlocks.length}):`}</span>
                 </span>
                 <div className="blocks-pills-row">
                   {textBlocks.map((b, idx) => (
@@ -563,18 +567,18 @@ export default function NotebookCanvas({
                       key={b.id}
                       className={`canvas-block-pill ${b.id === activeBlockId ? 'active' : ''}`}
                       onClick={() => onSelectBlock && onSelectBlock(b.id)}
-                      title={`Выбрать для редактирования: "${b.name || `Блок ${idx + 1}`}"`}
+                      title={t.canvasSelectBlockTitle ? t.canvasSelectBlockTitle.replace('{name}', b.name || (lang === 'en' ? `Block ${idx + 1}` : `Блок ${idx + 1}`)) : `Выбрать для редактирования: "${b.name || `Блок ${idx + 1}`}"`}
                     >
-                      <span>{b.name || `Блок ${idx + 1}`}</span>
+                      <span>{b.name || (lang === 'en' ? `Block ${idx + 1}` : `Блок ${idx + 1}`)}</span>
                     </button>
                   ))}
                   <button
                     className="canvas-block-add-btn"
                     onClick={onAddBlock}
-                    title="Добавить ещё один независимый блок текста на этот лист (+ Новый блок)"
+                    title={t.canvasAddBlockTitle || 'Добавить ещё один независимый блок текста на этот лист'}
                   >
                     <Plus size={13} />
-                    <span>+ Блок</span>
+                    <span>{t.canvasAddBlockBtn || 'Блок'}</span>
                   </button>
                 </div>
               </div>
@@ -585,20 +589,20 @@ export default function NotebookCanvas({
           <button
             className={`pill-btn ${activeDragMode === 'text' ? 'active' : ''}`}
             onClick={() => setActiveDragMode('text')}
-            title="Зажмите и перетаскивайте текст мышью прямо по листу тетради"
+            title={t.toolbarMoveTextTitle || 'Зажмите и перетаскивайте текст мышью прямо по листу тетради'}
           >
             <Type size={14} />
-            <span>Перемещать текст</span>
+            <span>{t.toolbarMoveText || 'Перемещать текст'}</span>
           </button>
 
           {loadedImage && (
             <button
               className={`pill-btn ${activeDragMode === 'photo' ? 'active' : ''}`}
               onClick={() => setActiveDragMode('photo')}
-              title="Перетаскивать фото тетради мышью"
+              title={t.toolbarMovePhotoTitle || 'Перетаскивать фото тетради мышью'}
             >
               <ImageIcon size={14} />
-              <span>Перемещать фото</span>
+              <span>{t.toolbarMovePhoto || 'Перемещать фото'}</span>
             </button>
           )}
 
@@ -619,10 +623,10 @@ export default function NotebookCanvas({
                 };
               })
             }
-            title="Прижать текст к левому краю листа (50px)"
+            title={t.toolbarLeftAlignTitle || 'Прижать текст к левому краю листа (50px)'}
           >
             <AlignLeft size={14} />
-            <span>Влево</span>
+            <span>{t.toolbarLeftAlign || 'Влево'}</span>
           </button>
 
           <button
@@ -639,10 +643,10 @@ export default function NotebookCanvas({
                 };
               })
             }
-            title="Выровнять по школьным полям тетради (290px)"
+            title={t.toolbarSchoolMarginsTitle || 'Выровнять по школьным полям тетради (290px)'}
           >
             <BookOpen size={14} />
-            <span>Школьные поля</span>
+            <span>{t.toolbarSchoolMargins || 'Школьные поля'}</span>
           </button>
 
           {/* Text Alignment group */}
@@ -650,28 +654,28 @@ export default function NotebookCanvas({
             <button
               className={`pill-btn mini-btn icon-only ${(!config.textAlign || config.textAlign === 'left') ? 'active' : ''}`}
               onClick={() => setConfig && setConfig((c) => ({ ...c, textAlign: 'left' }))}
-              title="Выравнивание: По левому краю (стандартно)"
+              title={t.alignLeft || 'По левому краю'}
             >
               <AlignLeft size={13} />
             </button>
             <button
               className={`pill-btn mini-btn icon-only ${config.textAlign === 'center' ? 'active' : ''}`}
               onClick={() => setConfig && setConfig((c) => ({ ...c, textAlign: 'center' }))}
-              title="Выравнивание: По центру"
+              title={t.alignCenter || 'По центру'}
             >
               <AlignCenter size={13} />
             </button>
             <button
               className={`pill-btn mini-btn icon-only ${config.textAlign === 'right' ? 'active' : ''}`}
               onClick={() => setConfig && setConfig((c) => ({ ...c, textAlign: 'right' }))}
-              title="Выравнивание: По правому краю"
+              title={t.alignRight || 'По правому краю'}
             >
               <AlignRight size={13} />
             </button>
             <button
               className={`pill-btn mini-btn icon-only ${config.textAlign === 'justify' ? 'active' : ''}`}
               onClick={() => setConfig && setConfig((c) => ({ ...c, textAlign: 'justify' }))}
-              title="Выравнивание: По ширине страницы"
+              title={t.alignJustify || 'По ширине'}
             >
               <AlignJustify size={13} />
             </button>
@@ -689,10 +693,10 @@ export default function NotebookCanvas({
                 perspectiveY: c.perspectiveY ? 0 : 25,
               }))
             }
-            title="Переключить 3D перспективу (Трапеция: верх уже, низ шире)"
+            title={t.toolbarTrapezoidTitle || 'Переключить 3D перспективу'}
           >
             <Maximize2 size={13} />
-            <span>Трапеция: {config.perspectiveY ? `+${config.perspectiveY}%` : '0%'}</span>
+            <span>{t.toolbarTrapezoid || 'Трапеция'}: {config.perspectiveY ? `+${config.perspectiveY}%` : '0%'}</span>
           </button>
 
           {/* Quick Page Bulge button */}
@@ -705,9 +709,9 @@ export default function NotebookCanvas({
                 pageBulge: c.pageBulge ? 0 : 25,
               }))
             }
-            title="Переключить изгиб строк (Бугорок листа +25px)"
+            title={t.toolbarBulgeTitle || 'Переключить изгиб строк'}
           >
-            <span>🌊 Бугорок: {config.pageBulge ? `${config.pageBulge > 0 ? '+' : ''}${config.pageBulge}px` : '0'}</span>
+            <span>🌊 {t.toolbarBulge || 'Бугорок'}: {config.pageBulge ? `${config.pageBulge > 0 ? '+' : ''}${config.pageBulge}px` : '0'}</span>
           </button>
 
           {/* 3D Line Mesh Calibration button */}
@@ -724,19 +728,19 @@ export default function NotebookCanvas({
                 }));
               }
             }}
-            title="Калибровка строк по точкам: совместите линии со строками на фото тетради"
+            title={t.toolbarMeshCalibTitle || 'Калибровка строк по точкам'}
           >
             <Target size={13} />
-            <span>🎯 Калибровка строк</span>
+            <span>🎯 {t.toolbarMeshCalib || 'Калибровка строк'}</span>
           </button>
 
           {/* Page Format Toggle */}
           <button
             className={`pill-btn mini-btn ${config.pageFormat === 'portrait' ? 'active' : ''}`}
             onClick={() => onSetPageFormat && onSetPageFormat('portrait')}
-            title="Переключить на 1 лист (Портрет 1400×1980)"
+            title={t.toolbarSheet1Title || 'Переключить на 1 лист'}
           >
-            📄 1 лист
+            📄 {t.toolbarSheet1 || '1 лист'}
           </button>
 
           <button
@@ -746,18 +750,18 @@ export default function NotebookCanvas({
                 : ''
             }`}
             onClick={() => onSetPageFormat && onSetPageFormat('spread')}
-            title="Переключить на 2 листа (Разворот 2400×1600)"
+            title={t.toolbarSheet2Title || 'Переключить на 2 листа'}
           >
-            📖 2 листа
+            📖 {t.toolbarSheet2 || '2 листа'}
           </button>
 
           {loadedImage && (
             <button
               className={`pill-btn mini-btn ${config.pageFormat === 'auto' ? 'active' : ''}`}
               onClick={() => onSetPageFormat && onSetPageFormat('auto')}
-              title="Вписать фото 100% без обрезки"
+              title={t.toolbarPhoto100Title || 'Вписать фото 100% без обрезки'}
             >
-              📷 100% фото
+              📷 {t.toolbarPhoto100 || '100% фото'}
             </button>
           )}
 
@@ -776,9 +780,9 @@ export default function NotebookCanvas({
                     marginRight: Math.round(c.canvasWidth / 2 + 50),
                   }))
                 }
-                title="Поместить текст на левый лист"
+                title={t.toolbarLeftSheetTitle || 'Поместить текст на левый лист'}
               >
-                ◀ Левый
+                {t.toolbarLeftSheet || '◀ Левый'}
               </button>
               <button
                 className={`pill-btn mini-btn ${config.columnsCount === 2 ? 'active' : ''}`}
@@ -791,9 +795,9 @@ export default function NotebookCanvas({
                     marginRight: Math.round(c.canvasWidth * 0.06),
                   }))
                 }
-                title="Текст на оба листа разворота (2 колонки)"
+                title={t.toolbarBothSheetsTitle || 'Текст на оба листа разворота'}
               >
-                Оба листа
+                {t.toolbarBothSheets || 'Оба листа'}
               </button>
               <button
                 className="pill-btn mini-btn"
@@ -806,9 +810,9 @@ export default function NotebookCanvas({
                     marginRight: Math.round(c.canvasWidth * 0.06),
                   }))
                 }
-                title="Поместить текст на правый лист"
+                title={t.toolbarRightSheetTitle || 'Поместить текст на правый лист'}
               >
-                Правый ▶
+                {t.toolbarRightSheet || 'Правый ▶'}
               </button>
             </>
           )}
@@ -825,10 +829,10 @@ export default function NotebookCanvas({
           <button
             className="pill-btn mini-btn pill-btn-danger"
             onClick={onResetAll}
-            title="Сбросить все параметры и наклон текста"
+            title={t.toolbarResetTitle || 'Сбросить все параметры и наклон текста'}
           >
             <RotateCcw size={12} />
-            <span>Сброс</span>
+            <span>{t.toolbarResetBtn || 'Сброс'}</span>
           </button>
         </div>
       </div>
@@ -839,21 +843,21 @@ export default function NotebookCanvas({
           <div className="banner-left">
             <Target size={16} className="banner-icon" />
             <span>
-              <strong>Калибровка строк по фото:</strong> Перетаскивайте точки прямо на строки тетради:
-              <span className="tag-red">🔴 Слева</span>
-              <span className="tag-amber">🟡 В центре (изгиб/бугор)</span>
-              <span className="tag-green">🟢 Справа</span>
-              — текст автоматически ложится на эти линии!
+              <strong>{t.calibBannerTitle || 'Калибровка строк по фото:'}</strong> {t.calibBannerText || 'Перетаскивайте точки прямо на строки тетради:'}{' '}
+              <span className="tag-red">{t.calibTagLeft || '🔴 Слева'}</span>
+              <span className="tag-amber">{t.calibTagMid || '🟡 В центре (изгиб/бугор)'}</span>
+              <span className="tag-green">{t.calibTagRight || '🟢 Справа'}</span>{' '}
+              {t.calibBannerSuffix || '— текст автоматически ложится на эти линии!'}
             </span>
           </div>
           <div className="banner-actions">
-            <button className="banner-btn" onClick={handleResetMeshToGrid} title="Вернуть исходную ровную сетку">
+            <button className="banner-btn" onClick={handleResetMeshToGrid} title={t.calibResetMeshTitle || 'Вернуть исходную ровную сетку'}>
               <RotateCcw size={13} />
-              <span>Сбросить сетку</span>
+              <span>{t.calibResetMesh || 'Сбросить сетку'}</span>
             </button>
-            <button className="banner-btn primary" onClick={() => setIsCalibratingMesh(false)} title="Применить и скрыть направляющие">
+            <button className="banner-btn primary" onClick={() => setIsCalibratingMesh(false)} title={t.calibDoneTitle || 'Применить и скрыть направляющие'}>
               <Check size={14} />
-              <span>Готово</span>
+              <span>{t.calibDone || 'Готово'}</span>
             </button>
           </div>
         </div>
@@ -1090,20 +1094,20 @@ export default function NotebookCanvas({
                 <div
                   className="resize-handle handle-right"
                   onMouseDown={handleMouseDownResizeRight}
-                  title="Потяните, чтобы изменить ширину текста (правое поле)"
+                  title={t.resizeWidthHint || 'Потяните, чтобы изменить ширину текста (правое поле)'}
                 />
 
                 {/* Resize handle bottom */}
                 <div
                   className="resize-handle handle-bottom"
                   onMouseDown={handleMouseDownResizeBottom}
-                  title="Потяните, чтобы изменить нижнюю границу"
+                  title={t.resizeBottomHint || 'Потяните, чтобы изменить нижнюю границу'}
                 />
               </div>
             )}
 
             <div className="sheet-page-tag">
-              Страница {currentPage + 1}
+              {t.sheetPageNumber ? t.sheetPageNumber.replace('{num}', currentPage + 1) : `Страница ${currentPage + 1}`}
             </div>
           </div>
         </div>
@@ -1114,38 +1118,38 @@ export default function NotebookCanvas({
         <button
           className={`hud-btn ${isHandToolActive || isSpacePressed ? 'active' : ''}`}
           onClick={() => setIsHandToolActive(!isHandToolActive)}
-          title="Инструмент «Рука» (или зажмите Пробел и тяните мышь)"
+          title={t.hudHandTitle || 'Инструмент «Рука» (или зажмите Пробел и тяните мышь)'}
         >
           <Hand size={14} />
-          <span>{isHandToolActive ? 'Рука' : 'Рука'}</span>
+          <span>{t.hudHand || 'Рука'}</span>
         </button>
 
         <div className="hud-divider" />
 
-        <button className="hud-btn icon-only" onClick={handleZoomOut} title="Уменьшить масштаб (Ctrl + Колёсико вниз)">
+        <button className="hud-btn icon-only" onClick={handleZoomOut} title={t.hudZoomOutTitle || 'Уменьшить масштаб (Ctrl + Колёсико вниз)'}>
           <ZoomOut size={14} />
         </button>
 
-        <button className="hud-zoom-val" onClick={handleResetZoom100} title="Нажмите, чтобы сбросить на 100%">
+        <button className="hud-zoom-val" onClick={handleResetZoom100} title={t.hudResetZoomTitle || 'Нажмите, чтобы сбросить на 100%'}>
           {Math.round(zoom * 100)}%
         </button>
 
-        <button className="hud-btn icon-only" onClick={handleZoomIn} title="Увеличить масштаб (Ctrl + Колёсико вверх)">
+        <button className="hud-btn icon-only" onClick={handleZoomIn} title={t.hudZoomInTitle || 'Увеличить масштаб (Ctrl + Колёсико вверх)'}>
           <ZoomIn size={14} />
         </button>
 
         <div className="hud-divider" />
 
-        <button className="hud-btn" onClick={handleFitToScreen} title="Вписать весь лист в экран">
+        <button className="hud-btn" onClick={handleFitToScreen} title={t.hudFitTitle || 'Вписать весь лист в экран'}>
           <Maximize2 size={13} />
-          <span>Вписать</span>
+          <span>{t.hudFitBtn || 'Вписать'}</span>
         </button>
 
         {(pan.x !== 0 || pan.y !== 0) && (
           <button
             className="hud-btn icon-only"
             onClick={() => setPan({ x: 0, y: 0 })}
-            title="Вернуть лист в центр"
+            title={t.hudResetCenterTitle || 'Вернуть лист в центр'}
           >
             <RotateCcw size={13} />
           </button>

@@ -13,12 +13,13 @@ import {
   exportPresetToFile,
   importPresetFromFile,
 } from './utils/presetManager';
+import { TRANSLATIONS } from './utils/i18n';
 import jsPDF from 'jspdf';
 
-function createInitialBlock(initialText, initialConfig) {
+function createInitialBlock(initialText, initialConfig, lang = 'ru') {
   return {
     id: 'block_1',
-    name: 'Блок 1 (Основной текст)',
+    name: lang === 'en' ? 'Block 1 (Main Text)' : 'Блок 1 (Основной текст)',
     text: initialText || SAMPLE_TEXTS.physics,
     fontFamily: initialConfig?.fontFamily || 'Caveat',
     fontSize: initialConfig?.fontSize || 42,
@@ -51,6 +52,21 @@ function createInitialBlock(initialText, initialConfig) {
 }
 
 export default function App() {
+  // Language state
+  const [lang, setLang] = useState(() => {
+    return localStorage.getItem('handnotes_lang') || 'ru';
+  });
+
+  const t = TRANSLATIONS[lang] || TRANSLATIONS.ru;
+
+  const handleToggleLang = () => {
+    setLang((prev) => {
+      const next = prev === 'ru' ? 'en' : 'ru';
+      localStorage.setItem('handnotes_lang', next);
+      return next;
+    });
+  };
+
   // Theme state
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('konspekt_theme') || 'dark';
@@ -293,12 +309,14 @@ export default function App() {
     });
 
     const nextTop = Math.min((config.canvasHeight || 1980) - 350, Math.round(maxBottomY + 40));
-    const newText = `Новый блок текста ${count}...\nЗдесь можно написать следующий пункт конспекта или формулу.`;
+    const newText = lang === 'en'
+      ? `New text block ${count}...\nYou can write your next lecture section or formulas here.`
+      : `Новый блок текста ${count}...\nЗдесь можно написать следующий пункт конспекта или формулу.`;
 
     const newBlock = {
       ...currentActive,
       id: newId,
-      name: `Блок ${count}`,
+      name: lang === 'en' ? `Block ${count}` : `Блок ${count}`,
       text: newText,
       marginTop: nextTop,
       marginBottom: Math.max(80, (config.canvasHeight || 1980) - nextTop - 250),
@@ -332,10 +350,11 @@ export default function App() {
     const block = textBlocks.find((b) => b.id === blockId);
     if (!block) return;
     const newId = `block_${Date.now()}`;
+    const copySuffix = lang === 'en' ? '(Copy)' : '(Копия)';
     const newBlock = {
       ...JSON.parse(JSON.stringify(block)),
       id: newId,
-      name: `${block.name} (Копия)`,
+      name: `${block.name} ${copySuffix}`,
       marginTop: Math.min((config.canvasHeight || 1980) - 250, (block.marginTop || 140) + 120),
       marginLeft: Math.min((config.canvasWidth || 1400) - 250, (block.marginLeft || 290) + 30),
     };
@@ -665,7 +684,7 @@ export default function App() {
 
   // Reset all parameters
   const handleResetAll = () => {
-    if (window.confirm('Сбросить все настройки текста, полей, наклона и перспективы к исходным значениям?')) {
+    if (window.confirm(t.resetAllConfirm || 'Сбросить все настройки текста, полей, наклона и перспективы к исходным значениям?')) {
       localStorage.removeItem('konspekt_config');
       localStorage.removeItem('konspekt_text_blocks');
       const resetConfig = {
@@ -676,7 +695,7 @@ export default function App() {
         columnsCount: loadedImageObj ? config.columnsCount : DEFAULT_CONFIG.columnsCount,
       };
       setConfig(resetConfig);
-      const initialBlocks = [createInitialBlock(SAMPLE_TEXTS.physics, resetConfig)];
+      const initialBlocks = [createInitialBlock(SAMPLE_TEXTS.physics, resetConfig, lang)];
       setTextBlocks(initialBlocks);
       setActiveBlockId(initialBlocks[0].id);
       setText(initialBlocks[0].text);
@@ -702,6 +721,9 @@ export default function App() {
         onExportPDF={handleExportPDF}
         onPrint={handlePrint}
         onResetAll={handleResetAll}
+        lang={lang}
+        onToggleLang={handleToggleLang}
+        t={t}
       />
 
       <main className="app-main">
@@ -710,10 +732,10 @@ export default function App() {
           <button
             className="floating-sidebar-toggle"
             onClick={handleToggleSidebar}
-            title="Открыть боковую панель настроек (Ctrl+B)"
+            title={t.sidebarToggleTitleShow || 'Открыть боковую панель настроек (Ctrl+B)'}
           >
             <PanelLeftOpen size={16} />
-            <span>Панель настроек</span>
+            <span>{t.floatingOpenSidebar || 'Панель настроек'}</span>
           </button>
         )}
 
@@ -752,6 +774,8 @@ export default function App() {
           onResetAll={handleResetAll}
           totalPages={totalPages}
           totalLines={totalLines}
+          lang={lang}
+          t={t}
         />
 
         <NotebookCanvas
@@ -770,6 +794,8 @@ export default function App() {
           onUploadPhoto={handleUploadPhoto}
           onSetPageFormat={handleSetPageFormat}
           onResetAll={handleResetAll}
+          lang={lang}
+          t={t}
         />
       </main>
     </div>
