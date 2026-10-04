@@ -14,6 +14,7 @@ import {
   importPresetFromFile,
 } from './utils/presetManager';
 import { TRANSLATIONS } from './utils/i18n';
+import { detectInitialLanguage } from './utils/localeDetector';
 import jsPDF from 'jspdf';
 
 function createInitialBlock(initialText, initialConfig, lang = 'ru') {
@@ -52,9 +53,9 @@ function createInitialBlock(initialText, initialConfig, lang = 'ru') {
 }
 
 export default function App() {
-  // Language state
+  // Language state (auto-detects CIS vs Global with localStorage persistence)
   const [lang, setLang] = useState(() => {
-    return localStorage.getItem('handnotes_lang') || 'ru';
+    return detectInitialLanguage();
   });
 
   const t = TRANSLATIONS[lang] || TRANSLATIONS.ru;
@@ -66,6 +67,42 @@ export default function App() {
       return next;
     });
   };
+
+  // Sync document language, title and SEO meta tags dynamically
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    if (lang === 'en') {
+      document.title = 'handnotes.app — Realistic Handwritten Notes Generator';
+      const descMeta = document.querySelector('meta[name="description"]');
+      if (descMeta) {
+        descMeta.setAttribute(
+          'content',
+          'Free online handwriting generator. Convert typed text into authentic handwritten notebook pages in Russian and English. Export high-resolution PDF and images.'
+        );
+      }
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      if (ogTitle) ogTitle.setAttribute('content', 'handnotes.app — Realistic Handwritten Notes Generator');
+      const ogDesc = document.querySelector('meta[property="og:description"]');
+      if (ogDesc) ogDesc.setAttribute('content', 'Turn digital text into realistic handwritten notebook pages. Support for cursive fonts, lined & squared sheets, and multi-page PDF export.');
+      const ogLocale = document.querySelector('meta[property="og:locale"]');
+      if (ogLocale) ogLocale.setAttribute('content', 'en_US');
+    } else {
+      document.title = 'handnotes.app — Генератор рукописного конспекта в тетради онлайн';
+      const descMeta = document.querySelector('meta[name="description"]');
+      if (descMeta) {
+        descMeta.setAttribute(
+          'content',
+          'Бесплатный онлайн-генератор рукописных конспектов в школьной и студенческой тетради. Реалистичные почерки, клетка, линейка, поля, экспорт в PDF и фото.'
+        );
+      }
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      if (ogTitle) ogTitle.setAttribute('content', 'handnotes.app — Генератор рукописного конспекта в тетради онлайн');
+      const ogDesc = document.querySelector('meta[property="og:description"]');
+      if (ogDesc) ogDesc.setAttribute('content', 'Перевод печатного текста в реалистичный рукописный конспект. Тетради в клетку и линейку, реалистичные чернила, наклон строк и экспорт в PDF.');
+      const ogLocale = document.querySelector('meta[property="og:locale"]');
+      if (ogLocale) ogLocale.setAttribute('content', 'ru_RU');
+    }
+  }, [lang]);
 
   // Theme state
   const [theme, setTheme] = useState(() => {

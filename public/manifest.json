@@ -1,0 +1,19 @@
+{
+  "name": "handnotes.app — Генератор рукописных конспектов",
+  "short_name": "handnotes.app",
+  "description": "Бесплатный онлайн-генератор рукописных конспектов в тетради. Реалистичные почерки и экспорт в PDF.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "utilities", "productivity"],
+  "lang": "ru"
+}

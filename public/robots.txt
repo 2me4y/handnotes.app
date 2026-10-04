@@ -1,0 +1,21 @@
+# Robots.txt for handnotes.app
+User-agent: *
+Allow: /
+
+# Googlebot specific rules
+User-agent: Googlebot
+Allow: /
+
+# Yandex specific rules
+User-agent: Yandex
+Allow: /
+Clean-param: ref /
+Clean-param: utm_source&utm_medium&utm_campaign /
+
+# Bingbot
+User-agent: Bingbot
+Allow: /
+
+# XML Sitemap
+Sitemap: https://handnotes.app/sitemap.xml
+Host: https://handnotes.app

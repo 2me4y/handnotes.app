@@ -1,14 +1,129 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>handnotes.app — Генератор рукописного конспекта в тетради</title>
-    <!-- Google Fonts with Cyrillic support -->
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Primary Meta Tags -->
+    <title>handnotes.app — Генератор рукописного конспекта в тетради онлайн</title>
+    <meta name="title" content="handnotes.app — Генератор рукописного конспекта в тетради онлайн" />
+    <meta name="description" content="Бесплатный онлайн-генератор рукописных конспектов в тетради в клетку и линейку. Перевод печатного текста в реалистичный рукописный почерк, наклон строк, поля, деформации и экспорт в PDF." />
+    <meta name="keywords" content="генератор конспектов, рукописный текст онлайн, конспект от руки в тетради, перевод печатного текста в рукописный, рукописный шрифт, конспект онлайн, тетрадь в клетку, тетрадь в линейку, handwriting generator, text to handwriting, notes generator, handwritten notes online, handwritten pdf maker" />
+    <meta name="author" content="handnotes.app" />
+    <meta name="theme-color" content="#4f46e5" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <!-- Crawlers & Indexing -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <meta name="yandex" content="index, follow" />
+
+    <!-- Canonical & Multilingual Alternates (hreflang) -->
+    <link rel="canonical" href="https://handnotes.app/" />
+    <link rel="alternate" hreflang="ru" href="https://handnotes.app/?lang=ru" />
+    <link rel="alternate" hreflang="en" href="https://handnotes.app/?lang=en" />
+    <link rel="alternate" hreflang="x-default" href="https://handnotes.app/" />
+
+    <!-- Open Graph / Facebook / VK / Telegram -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://handnotes.app/" />
+    <meta property="og:site_name" content="handnotes.app" />
+    <meta property="og:title" content="handnotes.app — Генератор рукописного конспекта в тетради онлайн" />
+    <meta property="og:description" content="Бесплатный онлайн-генератор рукописных конспектов в школьной и студенческой тетради. Реалистичные почерки, клетка, линейка, поля, экспорт в PDF и фото." />
+    <meta property="og:image" content="https://handnotes.app/og-preview.png" />
+    <meta property="og:image:secure_url" content="https://handnotes.app/og-preview.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="handnotes.app — Realistic Handwriting & Notes Generator" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:locale:alternate" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://handnotes.app/" />
+    <meta name="twitter:title" content="handnotes.app — Realistic Handwritten Notes Generator" />
+    <meta name="twitter:description" content="Convert typed digital text into authentic handwritten notebook pages. Export to multi-page PDF & high-res images." />
+    <meta name="twitter:image" content="https://handnotes.app/og-preview.png" />
+
+    <!-- Google Fonts with Cyrillic & Latin support -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Caveat:wght@400..700&family=Comfortaa:wght@400;600;700&family=Inter:wght@400;500;600;700&family=Kelly+Slab&family=Kurale&family=Marck+Script&family=Neucha&family=Pangolin&family=Shantell+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+
+    <!-- Schema.org WebApplication JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "handnotes.app",
+      "alternateName": [
+        "Генератор рукописных конспектов онлайн",
+        "Realistic Handwritten Notes Generator"
+      ],
+      "url": "https://handnotes.app/",
+      "logo": "https://handnotes.app/favicon.svg",
+      "image": "https://handnotes.app/og-preview.png",
+      "description": "Бесплатный онлайн-инструмент для перевода печатного текста в реалистичный рукописный конспект на тетрадных листах (клетка, линейка, А4, разворот) с экспортом в PDF.",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "All (Web Browser, iOS, Android, Windows, macOS, Linux)",
+      "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "inLanguage": ["ru", "en"],
+      "featureList": [
+        "Перевод печатного текста в рукописный конспект",
+        "Реалистичные почерки с поддержкой кириллицы и латиницы",
+        "Тетради в клетку, линейку, развороты и чистые листы",
+        "Регулировка наклона текста, дрожания почерка и цвета пасты ручки",
+        "Многостраничный экспорт в PDF, PNG и JPG",
+        "Загрузка собственных шрифтов и фото своей тетради",
+        "Multi-language support (Russian and English)"
+      ]
+    }
+    </script>
+
+    <!-- Schema.org FAQPage JSON-LD for Search Engine Snippets -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Как работает генератор рукописного конспекта handnotes.app?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Вы вводите или вставляете любой печатный текст, выбираете понравившийся рукописный шрифт, тип тетрадного листа (в клетку, линейку или разворот) и настраиваете наклон, цвет чернил и деформацию. Сервис автоматически форматирует текст по страницам и позволяет скачать готовый конспект в PDF или картинках."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Поддерживает ли сервис русские рукописные шрифты?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Да, сервис содержит популярные каллиграфические и реалистичные рукописные шрифты с полной поддержкой кириллицы (Caveat, Marck Script, Neucha, Bad Script, Pangolin и другие), а также позволяет загружать любые свои файлы шрифтов TTF/OTF."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I convert English text to handwriting and export to PDF?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, handnotes.app supports English text and Latin scripts with various authentic cursive handwriting styles, realistic ink shading, page bulges, and high-quality multi-page PDF export."
+          }
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
