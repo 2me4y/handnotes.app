@@ -48,13 +48,23 @@ export default function Header({
           <span className="sidebar-toggle-text">{sidebarOpen ? 'Скрыть панель' : 'Панель'}</span>
         </button>
 
-        <div className="brand">
-          <div className="brand-icon">
-            <BookOpen size={22} />
+        <div className="brand" title="handnotes.app — генератор рукописных конспектов">
+          <div className="brand-icon handnotes-logo">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="3" y="2.5" width="14" height="19" rx="3.5" fill="url(#hnGrad)" />
+              <path d="M7 6.5h6M7 10.5h6M7 14.5h4" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeOpacity="0.9"/>
+              <path d="M15.5 13.5l4-4a1.8 1.8 0 0 0-2.5-2.5l-4 4v2.5h2.5z" fill="#38bdf8" stroke="#1e293b" strokeWidth="0.8"/>
+              <defs>
+                <linearGradient id="hnGrad" x1="3" y1="2.5" x2="17" y2="21.5" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#6366f1" />
+                  <stop offset="1" stopColor="#2563eb" />
+                </linearGradient>
+              </defs>
+            </svg>
           </div>
           <div className="brand-text">
-            <span className="brand-title">Конспектограф</span>
-            <span className="brand-badge">PRO</span>
+            <span className="brand-title">handnotes<span className="brand-domain">.app</span></span>
+            <span className="brand-badge">STUDIO</span>
           </div>
         </div>
 
