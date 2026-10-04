@@ -3,6 +3,8 @@
  * Provides complete English & Russian UI translations and localized sample texts
  */
 
+import { SAMPLE_TEXTS } from './constants.js';
+
 export const SAMPLE_TEXTS_EN = {
   algebra: `Classwork
 Topic: Quadratic Equations & Vieta's Formulas
@@ -887,4 +889,49 @@ export function formatBlockName(nameOrBlock, idx = 0, lang = 'ru') {
     }
   }
   return rawName;
+}
+
+/**
+ * Automatically translates sample / example text between Russian and English.
+ * If user entered their own custom text, leaves it completely untouched.
+ */
+export function translateSampleText(text, targetLang = 'en') {
+  if (!text || typeof text !== 'string') return text;
+  const norm = (s) => (s || '').replace(/\r\n/g, '\n').trim();
+  const targetNorm = norm(text);
+
+  // 1. Check against Russian sample texts
+  for (const [key, ruVal] of Object.entries(SAMPLE_TEXTS)) {
+    if (norm(ruVal) === targetNorm) {
+      if (targetLang === 'en' && SAMPLE_TEXTS_EN[key]) {
+        return SAMPLE_TEXTS_EN[key];
+      }
+      if (targetLang === 'ru') {
+        return ruVal;
+      }
+    }
+  }
+
+  // 2. Check against English sample texts
+  for (const [key, enVal] of Object.entries(SAMPLE_TEXTS_EN)) {
+    if (norm(enVal) === targetNorm) {
+      if (targetLang === 'ru' && SAMPLE_TEXTS[key]) {
+        return SAMPLE_TEXTS[key];
+      }
+      if (targetLang === 'en') {
+        return enVal;
+      }
+    }
+  }
+
+  // Special case: check if starts with known Russian homework / exercise header
+  if (targetLang === 'en' && (targetNorm.startsWith('Домашняя работа\nУпражнение 218') || targetNorm.startsWith('Домашняя работа'))) {
+    return SAMPLE_TEXTS_EN.russian;
+  }
+  if (targetLang === 'ru' && (targetNorm.startsWith('Homework\nEssay Assignment: Literary Analysis') || targetNorm.startsWith('Homework\nEssay Assignment'))) {
+    return SAMPLE_TEXTS.russian;
+  }
+
+  // User's own custom written text - do not modify
+  return text;
 }

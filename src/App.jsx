@@ -13,16 +13,17 @@ import {
   exportPresetToFile,
   importPresetFromFile,
 } from './utils/presetManager';
-import { TRANSLATIONS, SAMPLE_TEXTS_EN } from './utils/i18n';
+import { TRANSLATIONS, SAMPLE_TEXTS_EN, translateSampleText } from './utils/i18n';
 import { detectInitialLanguage } from './utils/localeDetector';
 import jsPDF from 'jspdf';
 
 function createInitialBlock(initialText, initialConfig, lang = 'ru') {
   const defaultText = lang === 'en' ? SAMPLE_TEXTS_EN.physics : SAMPLE_TEXTS.physics;
+  const text = translateSampleText(initialText || defaultText, lang);
   return {
     id: 'block_1',
     name: lang === 'en' ? 'Block 1 (Main Text)' : 'Блок 1 (Основной текст)',
-    text: initialText || defaultText,
+    text,
     fontFamily: initialConfig?.fontFamily || 'Caveat',
     fontSize: initialConfig?.fontSize || 42,
     lineHeight: initialConfig?.lineHeight || 70,
@@ -65,6 +66,16 @@ export default function App() {
     setLang((prev) => {
       const next = prev === 'ru' ? 'en' : 'ru';
       localStorage.setItem('handnotes_lang', next);
+
+      // Automatically translate sample text if current block has default sample
+      setTextBlocks((blocks) =>
+        blocks.map((b) => ({
+          ...b,
+          text: translateSampleText(b.text, next),
+        }))
+      );
+      setText((cur) => translateSampleText(cur, next));
+
       return next;
     });
   };
@@ -125,15 +136,21 @@ export default function App() {
 
   // Multi-block text state
   const [textBlocks, setTextBlocks] = useState(() => {
+    const initialLang = detectInitialLanguage();
     const saved = localStorage.getItem('konspekt_text_blocks');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map((b) => ({
+            ...b,
+            text: translateSampleText(b.text, initialLang),
+          }));
+        }
       } catch (e) {}
     }
-    const legacyText = localStorage.getItem('konspekt_text') || SAMPLE_TEXTS.physics;
-    return [createInitialBlock(legacyText, config)];
+    const legacyText = localStorage.getItem('konspekt_text');
+    return [createInitialBlock(legacyText, config, initialLang)];
   });
 
   const [activeBlockId, setActiveBlockId] = useState(() => {
