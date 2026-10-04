@@ -857,3 +857,34 @@ export const TRANSLATIONS = {
     clearTextBtn: 'Clear text',
   },
 };
+
+/**
+ * Automatically formats default block names depending on current UI language.
+ * (e.g., 'Блок 1 (Основной текст)' -> 'Block 1 (Main Text)', 'Блок 2' -> 'Block 2')
+ * Custom user-renamed blocks remain untouched.
+ */
+export function formatBlockName(nameOrBlock, idx = 0, lang = 'ru') {
+  const rawName = (typeof nameOrBlock === 'object' && nameOrBlock !== null) ? nameOrBlock.name : nameOrBlock;
+  if (!rawName) return lang === 'en' ? `Block ${idx + 1}` : `Блок ${idx + 1}`;
+
+  if (lang === 'en') {
+    if (rawName === 'Блок 1 (Основной текст)' || rawName === 'Block 1 (Main Text)') {
+      return 'Block 1 (Main Text)';
+    }
+    const match = String(rawName).match(/^Блок\s+(\d+)(.*)$/i);
+    if (match) {
+      const suffix = (match[2] || '').replace(/\(Копия\)/gi, '(Copy)');
+      return `Block ${match[1]}${suffix}`;
+    }
+  } else {
+    if (rawName === 'Block 1 (Main Text)' || rawName === 'Блок 1 (Основной текст)') {
+      return 'Блок 1 (Основной текст)';
+    }
+    const match = String(rawName).match(/^Block\s+(\d+)(.*)$/i);
+    if (match) {
+      const suffix = (match[2] || '').replace(/\(Copy\)/gi, '(Копия)');
+      return `Блок ${match[1]}${suffix}`;
+    }
+  }
+  return rawName;
+}

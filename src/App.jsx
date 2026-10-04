@@ -13,15 +13,16 @@ import {
   exportPresetToFile,
   importPresetFromFile,
 } from './utils/presetManager';
-import { TRANSLATIONS } from './utils/i18n';
+import { TRANSLATIONS, SAMPLE_TEXTS_EN } from './utils/i18n';
 import { detectInitialLanguage } from './utils/localeDetector';
 import jsPDF from 'jspdf';
 
 function createInitialBlock(initialText, initialConfig, lang = 'ru') {
+  const defaultText = lang === 'en' ? SAMPLE_TEXTS_EN.physics : SAMPLE_TEXTS.physics;
   return {
     id: 'block_1',
     name: lang === 'en' ? 'Block 1 (Main Text)' : 'Блок 1 (Основной текст)',
-    text: initialText || SAMPLE_TEXTS.physics,
+    text: initialText || defaultText,
     fontFamily: initialConfig?.fontFamily || 'Caveat',
     fontSize: initialConfig?.fontSize || 42,
     lineHeight: initialConfig?.lineHeight || 70,
@@ -455,9 +456,9 @@ export default function App() {
       const imported = await importPresetFromFile(file);
       setUserPresets(getSavedUserPresets());
       handleApplyPreset(imported);
-      alert(`Пресет "${imported.name}" успешно импортирован и применён!`);
+      alert(lang === 'en' ? `Preset "${imported.name}" successfully imported and applied!` : `Пресет "${imported.name}" успешно импортирован и применён!`);
     } catch (err) {
-      alert('Ошибка при импорте пресета: ' + err.message);
+      alert(lang === 'en' ? 'Error importing preset: ' + err.message : 'Ошибка при импорте пресета: ' + err.message);
     }
   };
 
@@ -483,7 +484,7 @@ export default function App() {
       handleUpdateConfig('fontFamily', uniqueId);
     } catch (err) {
       console.error('Failed to load custom font:', err);
-      alert('Не удалось загрузить шрифт. Убедитесь, что файл имеет формат .ttf, .otf или .woff');
+      alert(lang === 'en' ? 'Failed to load font. Please ensure file is in .ttf, .otf, or .woff format.' : 'Не удалось загрузить шрифт. Убедитесь, что файл имеет формат .ttf, .otf или .woff');
     }
   };
 
@@ -710,7 +711,7 @@ export default function App() {
       doc.save('konspekt.pdf');
     } catch (e) {
       console.error('PDF export error:', e);
-      alert('Ошибка при сохранении PDF: ' + e.message);
+      alert(lang === 'en' ? 'Error saving PDF: ' + e.message : 'Ошибка при сохранении PDF: ' + e.message);
     }
   };
 
@@ -732,7 +733,7 @@ export default function App() {
         columnsCount: loadedImageObj ? config.columnsCount : DEFAULT_CONFIG.columnsCount,
       };
       setConfig(resetConfig);
-      const initialBlocks = [createInitialBlock(SAMPLE_TEXTS.physics, resetConfig, lang)];
+      const initialBlocks = [createInitialBlock(null, resetConfig, lang)];
       setTextBlocks(initialBlocks);
       setActiveBlockId(initialBlocks[0].id);
       setText(initialBlocks[0].text);

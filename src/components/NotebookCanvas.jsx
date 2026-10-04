@@ -28,7 +28,7 @@ import {
   ZoomIn,
   ZoomOut,
 } from 'lucide-react';
-import { TRANSLATIONS } from '../utils/i18n';
+import { TRANSLATIONS, formatBlockName } from '../utils/i18n';
 
 export default function NotebookCanvas({
   config,
@@ -562,16 +562,19 @@ export default function NotebookCanvas({
                   <span>{t.canvasBlocksLabel ? t.canvasBlocksLabel.replace('{count}', textBlocks.length) : `Блоки (${textBlocks.length}):`}</span>
                 </span>
                 <div className="blocks-pills-row">
-                  {textBlocks.map((b, idx) => (
-                    <button
-                      key={b.id}
-                      className={`canvas-block-pill ${b.id === activeBlockId ? 'active' : ''}`}
-                      onClick={() => onSelectBlock && onSelectBlock(b.id)}
-                      title={t.canvasSelectBlockTitle ? t.canvasSelectBlockTitle.replace('{name}', b.name || (lang === 'en' ? `Block ${idx + 1}` : `Блок ${idx + 1}`)) : `Выбрать для редактирования: "${b.name || `Блок ${idx + 1}`}"`}
-                    >
-                      <span>{b.name || (lang === 'en' ? `Block ${idx + 1}` : `Блок ${idx + 1}`)}</span>
-                    </button>
-                  ))}
+                  {textBlocks.map((b, idx) => {
+                    const displayName = formatBlockName(b, idx, lang);
+                    return (
+                      <button
+                        key={b.id}
+                        className={`canvas-block-pill ${b.id === activeBlockId ? 'active' : ''}`}
+                        onClick={() => onSelectBlock && onSelectBlock(b.id)}
+                        title={t.canvasSelectBlockTitle ? t.canvasSelectBlockTitle.replace('{name}', displayName) : `Выбрать для редактирования: "${displayName}"`}
+                      >
+                        <span>{displayName}</span>
+                      </button>
+                    );
+                  })}
                   <button
                     className="canvas-block-add-btn"
                     onClick={onAddBlock}
@@ -980,17 +983,17 @@ export default function NotebookCanvas({
                 }}
               >
                 {[
-                  { row: 'top', col: 'left', name: 'Верх Слева', color: '#ef4444' },
-                  { row: 'top', col: 'mid', name: 'Верх Изгиб', color: '#f59e0b' },
-                  { row: 'top', col: 'right', name: 'Верх Справа', color: '#10b981' },
+                  { row: 'top', col: 'left', name: lang === 'en' ? 'Top Left' : 'Верх Слева', color: '#ef4444' },
+                  { row: 'top', col: 'mid', name: lang === 'en' ? 'Top Curve' : 'Верх Изгиб', color: '#f59e0b' },
+                  { row: 'top', col: 'right', name: lang === 'en' ? 'Top Right' : 'Верх Справа', color: '#10b981' },
 
-                  { row: 'center', col: 'left', name: 'Центр Слева', color: '#ef4444' },
-                  { row: 'center', col: 'mid', name: 'Центр Бугор', color: '#f59e0b' },
-                  { row: 'center', col: 'right', name: 'Центр Справа', color: '#10b981' },
+                  { row: 'center', col: 'left', name: lang === 'en' ? 'Center Left' : 'Центр Слева', color: '#ef4444' },
+                  { row: 'center', col: 'mid', name: lang === 'en' ? 'Center Bulge' : 'Центр Бугор', color: '#f59e0b' },
+                  { row: 'center', col: 'right', name: lang === 'en' ? 'Center Right' : 'Центр Справа', color: '#10b981' },
 
-                  { row: 'bottom', col: 'left', name: 'Низ Слева', color: '#ef4444' },
-                  { row: 'bottom', col: 'mid', name: 'Низ Изгиб', color: '#f59e0b' },
-                  { row: 'bottom', col: 'right', name: 'Низ Справа', color: '#10b981' },
+                  { row: 'bottom', col: 'left', name: lang === 'en' ? 'Bottom Left' : 'Низ Слева', color: '#ef4444' },
+                  { row: 'bottom', col: 'mid', name: lang === 'en' ? 'Bottom Curve' : 'Низ Изгиб', color: '#f59e0b' },
+                  { row: 'bottom', col: 'right', name: lang === 'en' ? 'Bottom Right' : 'Низ Справа', color: '#10b981' },
                 ].map(({ row, col, name, color }) => {
                   const pt = activeMesh[row][col];
                   const isDragging = draggingMeshPoint && draggingMeshPoint.row === row && draggingMeshPoint.col === col;
@@ -1011,7 +1014,7 @@ export default function NotebookCanvas({
                       onMouseDown={(e) => handleMouseDownMeshPoint(e, row, col)}
                       onMouseEnter={() => setHoveredMeshPoint({ row, col })}
                       onMouseLeave={() => setHoveredMeshPoint(null)}
-                      title={`${name}: зажмите и переместите на линию тетради`}
+                      title={lang === 'en' ? `${name}: drag onto notebook guideline` : `${name}: зажмите и переместите на линию тетради`}
                     >
                       <div className="pin-pulse" style={{ borderColor: color }} />
                       <div className="pin-dot" style={{ backgroundColor: color }} />
@@ -1055,7 +1058,7 @@ export default function NotebookCanvas({
                     e.stopPropagation();
                     onSelectBlock && onSelectBlock(block.id);
                   }}
-                  title={`Нажмите, чтобы выбрать блок "${block.name || 'Блок'}"`}
+                  title={lang === 'en' ? `Click to select block "${formatBlockName(block, idx, lang)}"` : `Нажмите, чтобы выбрать блок "${formatBlockName(block, idx, lang)}"`}
                 />
               );
             })}
@@ -1079,7 +1082,7 @@ export default function NotebookCanvas({
                 {/* Minimal floating move pill ABOVE the text box (never covers text) */}
                 <div
                   className="text-drag-pill"
-                  title="Зажмите и тяните для перемещения текста по листу"
+                  title={lang === 'en' ? 'Hold and drag to reposition text across page' : 'Зажмите и тяните для перемещения текста по листу'}
                 >
                   <Move size={12} />
                 </div>

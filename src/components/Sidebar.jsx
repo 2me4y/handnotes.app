@@ -26,9 +26,9 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { DEFAULT_FONTS, INK_COLORS, SAMPLE_TEXTS } from '../utils/constants';
-import { PAPER_PRESETS } from '../utils/paperEngine';
+import { PAPER_PRESETS, getPaperPresets } from '../utils/paperEngine';
 import { getBuiltinPresets } from '../utils/presetManager';
-import { TRANSLATIONS, SAMPLE_TEXTS_EN } from '../utils/i18n';
+import { TRANSLATIONS, SAMPLE_TEXTS_EN, formatBlockName } from '../utils/i18n';
 
 export default function Sidebar({
   isOpen = true,
@@ -70,6 +70,7 @@ export default function Sidebar({
 }) {
   const t = propT || TRANSLATIONS[lang] || TRANSLATIONS.ru;
   const builtinPresets = useMemo(() => getBuiltinPresets(lang), [lang]);
+  const paperPresets = useMemo(() => getPaperPresets(lang), [lang]);
   const sampleTexts = lang === 'en' ? SAMPLE_TEXTS_EN : SAMPLE_TEXTS;
 
   const [activeTab, setActiveTab] = useState('text');
@@ -187,30 +188,33 @@ export default function Sidebar({
 
               {/* Block Selection Chips */}
               <div className="blocks-chips-row">
-                {textBlocks && textBlocks.map((block, idx) => (
-                  <div
-                    key={block.id}
-                    className={`block-chip ${block.id === activeBlockId ? 'active' : ''}`}
-                    onClick={() => onSelectBlock && onSelectBlock(block.id)}
-                    title={t.editBlockTitle ? t.editBlockTitle.replace('{name}', block.name || (lang === 'en' ? `Block ${idx + 1}` : `Блок ${idx + 1}`)) : `Редактировать "${block.name || `Блок ${idx + 1}`}"`}
-                  >
-                    <span className="block-chip-name">{block.name || (lang === 'en' ? `Block ${idx + 1}` : `Блок ${idx + 1}`)}</span>
-                    {textBlocks.length > 1 && (
-                      <button
-                        className="block-chip-del-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (window.confirm(t.confirmDeleteBlock ? t.confirmDeleteBlock.replace('{name}', block.name || 'this block') : `Удалить "${block.name || 'этот блок'}"?`)) {
-                            onDeleteBlock && onDeleteBlock(block.id);
-                          }
-                        }}
-                        title={t.deleteBlock || 'Удалить этот блок'}
-                      >
-                        <Trash2 size={12} />
-                      </button>
-                    )}
-                  </div>
-                ))}
+                {textBlocks && textBlocks.map((block, idx) => {
+                  const displayName = formatBlockName(block, idx, lang);
+                  return (
+                    <div
+                      key={block.id}
+                      className={`block-chip ${block.id === activeBlockId ? 'active' : ''}`}
+                      onClick={() => onSelectBlock && onSelectBlock(block.id)}
+                      title={t.editBlockTitle ? t.editBlockTitle.replace('{name}', displayName) : `Редактировать "${displayName}"`}
+                    >
+                      <span className="block-chip-name">{displayName}</span>
+                      {textBlocks.length > 1 && (
+                        <button
+                          className="block-chip-del-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (window.confirm(t.confirmDeleteBlock ? t.confirmDeleteBlock.replace('{name}', displayName) : `Удалить "${displayName}"?`)) {
+                              onDeleteBlock && onDeleteBlock(block.id);
+                            }
+                          }}
+                          title={t.deleteBlock || 'Удалить этот блок'}
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Active Block Control Bar */}
@@ -245,11 +249,11 @@ export default function Sidebar({
                         className="active-block-title"
                         onClick={() => {
                           setEditingBlockNameId(activeBlock.id);
-                          setTempBlockName(activeBlock.name || '');
+                          setTempBlockName(formatBlockName(activeBlock, 0, lang));
                         }}
                         title={t.renameBlockHint || 'Нажмите, чтобы переименовать этот блок'}
                       >
-                        <strong>{activeBlock.name || (lang === 'en' ? 'Block' : 'Блок')}</strong>
+                        <strong>{formatBlockName(activeBlock, 0, lang)}</strong>
                         <span className="tiny-edit-hint">✎</span>
                       </span>
                     )}
@@ -1089,10 +1093,10 @@ export default function Sidebar({
             {!customImage && (
               <div className="control-group">
                 <label className="group-label">
-                  {t.builtinSheetsLabel ? t.builtinSheetsLabel.replace('{count}', PAPER_PRESETS.length) : `Встроенные тетрадные листы (${PAPER_PRESETS.length})`}
+                  {t.builtinSheetsLabel ? t.builtinSheetsLabel.replace('{count}', paperPresets.length) : `Встроенные тетрадные листы (${paperPresets.length})`}
                 </label>
                 <div className="preset-grid">
-                  {PAPER_PRESETS.map((preset) => (
+                  {paperPresets.map((preset) => (
                     <button
                       key={preset.id}
                       className={`preset-card ${config.preset === preset.id ? 'active' : ''}`}

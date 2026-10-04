@@ -4,17 +4,92 @@
  * including 2-page spread (разворот тетради / 2 листа) and 100% uncropped contain/cover modes.
  */
 
-export const PAPER_PRESETS = [
-  { id: 'grid', name: 'Тетрадь в клетку (5 мм)', icon: 'Grid', desc: 'Классическая клетка 35 px' },
-  { id: 'dense_grid', name: 'Мелкая клетка (инженерная)', icon: 'Grid', desc: 'Плотная сетка 25 px' },
-  { id: 'large_grid', name: 'Крупная клетка', icon: 'Grid', desc: 'Укрупнённая клетка 50 px' },
-  { id: 'lined', name: 'Тетрадь в линейку', icon: 'AlignLeft', desc: 'Школьная линейка 50 px' },
-  { id: 'narrow_lined', name: 'Узкая линейка', icon: 'AlignLeft', desc: 'Частая линейка 35 px' },
-  { id: 'slanted', name: 'Косая линейка (прописи)', icon: 'Italic', desc: 'Прописи для начальных классов' },
-  { id: 'dots', name: 'В точку (Bullet Journal)', icon: 'Circle', desc: 'Точечная разметка для планеров' },
-  { id: 'vintage', name: 'Крафт / Состаренный лист', icon: 'FileText', desc: 'Винтажный тёплый пергамент' },
-  { id: 'blank', name: 'Белый чистый лист', icon: 'Square', desc: 'Без линий и разметки' },
+export const PAPER_PRESETS_DATA = [
+  {
+    id: 'grid',
+    nameRu: 'Тетрадь в клетку (5 мм)',
+    nameEn: 'Squared Paper (5 mm)',
+    icon: 'Grid',
+    descRu: 'Классическая клетка 35 px',
+    descEn: 'Classic 35 px square grid',
+  },
+  {
+    id: 'dense_grid',
+    nameRu: 'Мелкая клетка (инженерная)',
+    nameEn: 'Dense Grid (Engineering)',
+    icon: 'Grid',
+    descRu: 'Плотная сетка 25 px',
+    descEn: 'Dense 25 px grid',
+  },
+  {
+    id: 'large_grid',
+    nameRu: 'Крупная клетка',
+    nameEn: 'Large Grid',
+    icon: 'Grid',
+    descRu: 'Укрупнённая клетка 50 px',
+    descEn: 'Large 50 px square grid',
+  },
+  {
+    id: 'lined',
+    nameRu: 'Тетрадь в линейку',
+    nameEn: 'Lined Notebook',
+    icon: 'AlignLeft',
+    descRu: 'Школьная линейка 50 px',
+    descEn: 'Standard 50 px ruled lines',
+  },
+  {
+    id: 'narrow_lined',
+    nameRu: 'Узкая линейка',
+    nameEn: 'Narrow Ruled',
+    icon: 'AlignLeft',
+    descRu: 'Частая линейка 35 px',
+    descEn: 'Compact 35 px ruled lines',
+  },
+  {
+    id: 'slanted',
+    nameRu: 'Косая линейка (прописи)',
+    nameEn: 'Slanted Ruled (Penmanship)',
+    icon: 'Italic',
+    descRu: 'Прописи для начальных классов',
+    descEn: 'Calligraphy exercise guides',
+  },
+  {
+    id: 'dots',
+    nameRu: 'В точку (Bullet Journal)',
+    nameEn: 'Dotted (Bullet Journal)',
+    icon: 'Circle',
+    descRu: 'Точечная разметка для планеров',
+    descEn: 'Dot matrix for planners',
+  },
+  {
+    id: 'vintage',
+    nameRu: 'Крафт / Состаренный лист',
+    nameEn: 'Vintage / Kraft Paper',
+    icon: 'FileText',
+    descRu: 'Винтажный тёплый пергамент',
+    descEn: 'Warm antique parchment',
+  },
+  {
+    id: 'blank',
+    nameRu: 'Белый чистый лист',
+    nameEn: 'Blank Sheet',
+    icon: 'Square',
+    descRu: 'Без линий и разметки',
+    descEn: 'Clean unruled plain paper',
+  },
 ];
+
+export function getPaperPresets(lang = 'ru') {
+  const isEn = lang === 'en';
+  return PAPER_PRESETS_DATA.map((p) => ({
+    id: p.id,
+    name: isEn ? p.nameEn : p.nameRu,
+    desc: isEn ? p.descEn : p.descRu,
+    icon: p.icon,
+  }));
+}
+
+export const PAPER_PRESETS = getPaperPresets('ru');
 
 /**
  * Draws the paper background onto the canvas
