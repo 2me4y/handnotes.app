@@ -33,6 +33,7 @@ export default function Header({
   onExportPNG,
   onExportPDF,
   onPrint,
+  onGoToDownload,
   onResetAll,
   lang = 'ru',
   onToggleLang,
@@ -163,19 +164,15 @@ export default function Header({
           {theme === 'dark' ? <Sun size={18} className="sun-icon" /> : <Moon size={18} className="moon-icon" />}
         </button>
 
-        {/* Quick export actions */}
-        <div className="export-actions">
-          <button className="primary-btn" onClick={onExportPNG} title={t.exportPngTitle || 'Скачать страницу как изображение'}>
-            <Download size={16} />
-            <span>{t.downloadPng || 'Скачать PNG'}</span>
-          </button>
-          <button className="secondary-btn" onClick={onExportPDF} title={t.exportPdfTitle || 'Сохранить весь конспект в PDF'}>
-            <span>{t.downloadPdf || 'PDF'}</span>
-          </button>
-          <button className="icon-btn" onClick={onPrint} title={t.exportPrintTitle || 'Распечатать'}>
-            <Printer size={18} />
-          </button>
-        </div>
+        {/* Button to navigate to Dedicated Download / Export Page */}
+        <button
+          className="header-action-btn primary download-page-trigger-btn"
+          onClick={onGoToDownload}
+          title={t.goToDownloadPageTitle || 'Перейти на страницу скачивания готового конспекта в PDF или фото'}
+        >
+          <Download size={16} />
+          <span>{t.goToDownloadPage || 'Скачать конспект'}</span>
+        </button>
       </div>
     </header>
   );

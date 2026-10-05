@@ -67,6 +67,7 @@ export default function Sidebar({
   totalLines,
   lang = 'ru',
   t: propT,
+  onGoToDownload,
 }) {
   const t = propT || TRANSLATIONS[lang] || TRANSLATIONS.ru;
   const builtinPresets = useMemo(() => getBuiltinPresets(lang), [lang]);
@@ -438,7 +439,7 @@ export default function Sidebar({
             <div className="control-group custom-font-box">
               <div className="group-title-row">
                 <label className="group-label">{t.customFontTitle || 'Свой рукописный шрифт'}</label>
-                <span className="badge-small">.ttf, .otf, .woff</span>
+                <span className="badge-small">{t.customFontFormats || '.ttf, .otf, .woff'}</span>
               </div>
               <input
                 type="file"
@@ -1831,45 +1832,30 @@ export default function Sidebar({
               <h3>{t.exportSectionTitle || 'Экспорт и сохранение'}</h3>
             </div>
 
-            <div className="export-cards-grid">
-              <div className="export-action-card" onClick={onExportPNG}>
-                <div className="export-card-icon png-icon">
-                  <Download size={22} />
-                </div>
-                <div className="export-card-info">
-                  <h4>{t.exportPngTitle || 'Скачать как PNG'}</h4>
-                  <p>{t.exportPngDesc || 'Текущая страница в сверхвысоком разрешении (1400×1980 px)'}</p>
-                </div>
+            <div className="sidebar-download-nav-card">
+              <div className="download-nav-badge">
+                <Sparkles size={14} />
+                <span>{t.dedicatedDownloadBadge || 'Новая страница скачивания'}</span>
               </div>
+              <h4 className="download-nav-title">{t.downloadPageTitle || 'Страница скачивания конспекта'}</h4>
+              <p className="download-nav-desc">
+                {t.sidebarDownloadPageNotice || 'Скачивание PDF, изображений PNG/JPG и печать перенесены на отдельную страницу с полноэкранным просмотром и выбором качества.'}
+              </p>
 
-              <div className="export-action-card" onClick={onExportJPG}>
-                <div className="export-card-icon jpg-icon">
-                  <Download size={22} />
-                </div>
-                <div className="export-card-info">
-                  <h4>{t.exportJpgTitle || 'Скачать как JPG'}</h4>
-                  <p>{t.exportJpgDesc || 'Оптимизированный размер файла для отправки учителю или в мессенджер'}</p>
-                </div>
-              </div>
+              <button
+                className="sidebar-go-to-download-btn"
+                onClick={onGoToDownload}
+                title={t.goToDownloadPageTitle || 'Перейти на страницу скачивания готового конспекта'}
+              >
+                <Download size={18} />
+                <span>{t.goToDownloadPage || 'Перейти к скачиванию'}</span>
+                <ChevronRight size={18} />
+              </button>
 
-              <div className="export-action-card" onClick={onExportPDF}>
-                <div className="export-card-icon pdf-icon">
-                  <Layers size={22} />
-                </div>
-                <div className="export-card-info">
-                  <h4>{t.exportPdfTitle || 'Сохранить весь конспект в PDF'}</h4>
-                  <p>{t.exportPdfDesc || 'Все страницы документа в одном готовом PDF-файле A4'}</p>
-                </div>
-              </div>
-
-              <div className="export-action-card" onClick={onPrint}>
-                <div className="export-card-icon print-icon">
-                  <Download size={22} />
-                </div>
-                <div className="export-card-info">
-                  <h4>{t.exportPrintTitle || 'Распечатать'}</h4>
-                  <p>{t.exportPrintDesc || 'Прямая печать через диалоговое окно браузера (Ctrl+P)'}</p>
-                </div>
+              <div className="sidebar-download-features">
+                <div className="feature-item">✓ {t.summaryBadgeFree || '100% Бесплатно без водяных знаков'}</div>
+                <div className="feature-item">✓ {t.exportPdfBadge || 'Многостраничный PDF'}</div>
+                <div className="feature-item">✓ {t.exportPngBadge || 'HD PNG и JPG'}</div>
               </div>
             </div>
           </div>

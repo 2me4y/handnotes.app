@@ -3,6 +3,8 @@ import { PanelLeftOpen } from 'lucide-react';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import NotebookCanvas from './components/NotebookCanvas';
+import DownloadPage from './components/DownloadPage';
+import AdBanner from './components/AdBanner';
 import { DEFAULT_CONFIG, SAMPLE_TEXTS } from './utils/constants';
 import { layoutTextPages, drawTextPage } from './utils/textEngine';
 import { drawPaperBackground } from './utils/paperEngine';
@@ -59,6 +61,9 @@ export default function App() {
   const [lang, setLang] = useState(() => {
     return detectInitialLanguage();
   });
+
+  // Current view: 'editor' or 'download' (Dedicated Download Page)
+  const [currentView, setCurrentView] = useState('editor');
 
   const t = TRANSLATIONS[lang] || TRANSLATIONS.ru;
 
@@ -758,6 +763,30 @@ export default function App() {
     }
   };
 
+  if (currentView === 'download') {
+    return (
+      <DownloadPage
+        onBackToEditor={() => setCurrentView('editor')}
+        config={config}
+        textBlocksWithLayout={textBlocksWithLayout}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        totalPages={totalPages}
+        totalLines={totalLines}
+        loadedImage={loadedImageObj}
+        onExportPNG={handleExportPNG}
+        onExportJPG={handleExportJPG}
+        onExportPDF={handleExportPDF}
+        onPrint={handlePrint}
+        theme={theme}
+        setTheme={setTheme}
+        lang={lang}
+        onToggleLang={handleToggleLang}
+        t={t}
+      />
+    );
+  }
+
   return (
     <div className="app-container">
       <Header
@@ -779,6 +808,7 @@ export default function App() {
         lang={lang}
         onToggleLang={handleToggleLang}
         t={t}
+        onGoToDownload={() => setCurrentView('download')}
       />
 
       <main className="app-main">
@@ -831,6 +861,7 @@ export default function App() {
           totalLines={totalLines}
           lang={lang}
           t={t}
+          onGoToDownload={() => setCurrentView('download')}
         />
 
         <NotebookCanvas
@@ -852,6 +883,11 @@ export default function App() {
           lang={lang}
           t={t}
         />
+
+        {/* Dedicated side advertising column on the editing page */}
+        <aside className="editor-side-ad-column" aria-label="Рекламный блок">
+          <AdBanner slotId="editor-right-skyscraper" format="vertical" lang={lang} t={t} />
+        </aside>
       </main>
     </div>
   );
