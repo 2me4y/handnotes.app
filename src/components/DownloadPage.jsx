@@ -101,27 +101,42 @@ export default function DownloadPage({
       <header className="download-page-header">
         <div className="download-header-left">
           <button
-            className="back-to-editor-btn"
+            className="download-back-btn"
             onClick={onBackToEditor}
             title={t.backToEditorBtn || 'Вернуться к редактированию конспекта'}
           >
-            <ArrowLeft size={18} />
+            <ArrowLeft size={17} />
             <span>{t.backToEditorBtn || 'Назад к редактору'}</span>
           </button>
 
-          <div className="download-brand">
-            <span className="brand-name">handnotes</span>
-            <span className="brand-dot">.app</span>
-            <span className="download-badge">EXPORT</span>
+          <div className="brand" title={lang === 'en' ? 'handnotes.app — download center' : 'handnotes.app — центр скачивания конспекта'}>
+            <div className="brand-icon handnotes-logo">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="2.5" width="14" height="19" rx="3.5" fill="url(#hnGradDl)" />
+                <path d="M7 6.5h6M7 10.5h6M7 14.5h4" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeOpacity="0.9"/>
+                <path d="M15.5 13.5l4-4a1.8 1.8 0 0 0-2.5-2.5l-4 4v2.5h2.5z" fill="#38bdf8" stroke="#1e293b" strokeWidth="0.8"/>
+                <defs>
+                  <linearGradient id="hnGradDl" x1="3" y1="2.5" x2="17" y2="21.5" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#6366f1" />
+                    <stop offset="1" stopColor="#2563eb" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <div className="brand-text">
+              <span className="brand-title">{t.brandTitle || 'handnotes'}<span className="brand-domain">{t.brandDomain || '.app'}</span></span>
+              <span className="brand-badge download-mode-badge">{lang === 'en' ? 'EXPORT' : 'СКАЧИВАНИЕ'}</span>
+            </div>
           </div>
         </div>
 
         <div className="download-header-right">
           {/* Language Switcher */}
           <button
-            className="header-action-btn"
+            className="header-action-btn header-lang-btn"
             onClick={onToggleLang}
             title={t.langToggleTitle || 'Switch language / Переключить язык'}
+            aria-label="Toggle language"
           >
             <Languages size={16} />
             <span className="lang-code-badge">{lang.toUpperCase()}</span>
@@ -133,7 +148,7 @@ export default function DownloadPage({
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             title={theme === 'dark' ? (t.themeLight || 'Светлая тема') : (t.themeDark || 'Тёмная тема')}
           >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            {theme === 'dark' ? <Sun size={18} className="sun-icon" /> : <Moon size={18} className="moon-icon" />}
           </button>
         </div>
       </header>

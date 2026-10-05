@@ -111,59 +111,64 @@ export default function Sidebar({
 
   return (
     <aside className={`app-sidebar ${!isOpen ? 'collapsed' : ''}`}>
-      {/* Tab navigation bar */}
-      <nav className="sidebar-tabs">
-        <button
-          className={`tab-btn ${activeTab === 'text' ? 'active' : ''}`}
-          onClick={() => setActiveTab('text')}
-        >
-          <FileText size={18} />
-          <span>{t.tabText || 'Текст'}</span>
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'font' ? 'active' : ''}`}
-          onClick={() => setActiveTab('font')}
-        >
-          <Type size={18} />
-          <span>{t.tabFont || 'Шрифт'}</span>
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'paper' ? 'active' : ''}`}
-          onClick={() => setActiveTab('paper')}
-        >
-          <ImageIcon size={18} />
-          <span>{t.tabPaper || 'Тетрадь'}</span>
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'layout' ? 'active' : ''}`}
-          onClick={() => setActiveTab('layout')}
-        >
-          <Sliders size={18} />
-          <span>{t.tabLayout || 'Поля'}</span>
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'presets' ? 'active' : ''}`}
-          onClick={() => setActiveTab('presets')}
-          title={t.tabPresets || 'Сохранённые и готовые пресеты настроек'}
-        >
-          <Bookmark size={18} />
-          <span>{t.tabPresets || 'Пресеты'}</span>
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'export' ? 'active' : ''}`}
-          onClick={() => setActiveTab('export')}
-        >
-          <Download size={18} />
-          <span>{t.tabExport || 'Экспорт'}</span>
-        </button>
+      {/* Header bar of sidebar containing tabs and pinned collapse button */}
+      <div className="sidebar-header-bar">
+        <nav className="sidebar-tabs" aria-label="Разделы настроек">
+          <button
+            className={`tab-btn ${activeTab === 'text' ? 'active' : ''}`}
+            onClick={() => setActiveTab('text')}
+          >
+            <FileText size={17} />
+            <span>{t.tabText || 'Текст'}</span>
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'font' ? 'active' : ''}`}
+            onClick={() => setActiveTab('font')}
+          >
+            <Type size={17} />
+            <span>{t.tabFont || 'Шрифт'}</span>
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'paper' ? 'active' : ''}`}
+            onClick={() => setActiveTab('paper')}
+          >
+            <ImageIcon size={17} />
+            <span>{t.tabPaper || 'Тетрадь'}</span>
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'layout' ? 'active' : ''}`}
+            onClick={() => setActiveTab('layout')}
+          >
+            <Sliders size={17} />
+            <span>{t.tabLayout || 'Поля'}</span>
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'presets' ? 'active' : ''}`}
+            onClick={() => setActiveTab('presets')}
+            title={t.tabPresets || 'Сохранённые и готовые пресеты настроек'}
+          >
+            <Bookmark size={17} />
+            <span>{t.tabPresets || 'Пресеты'}</span>
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'export' ? 'active' : ''}`}
+            onClick={() => setActiveTab('export')}
+          >
+            <Download size={17} />
+            <span>{t.tabExport || 'Экспорт'}</span>
+          </button>
+        </nav>
+
+        {/* Dedicated, permanently visible sidebar collapse button */}
         <button
           className="sidebar-hide-btn"
           onClick={onToggleSidebar}
           title={t.sidebarToggleTitleHide || 'Скрыть боковую панель (Ctrl+B)'}
+          aria-label={t.sidebarToggleHide || 'Скрыть панель'}
         >
-          <PanelLeftClose size={16} />
+          <PanelLeftClose size={17} />
         </button>
-      </nav>
+      </div>
 
       {/* Tab contents */}
       <div className="tab-content">
