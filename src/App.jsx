@@ -17,6 +17,7 @@ import {
 } from './utils/presetManager';
 import { TRANSLATIONS, SAMPLE_TEXTS_EN, translateSampleText } from './utils/i18n';
 import { detectInitialLanguage } from './utils/localeDetector';
+import { trackExport } from './utils/analytics';
 import jsPDF from 'jspdf';
 
 function createInitialBlock(initialText, initialConfig, lang = 'ru') {
@@ -676,6 +677,7 @@ export default function App() {
 
   // Export current page as PNG
   const handleExportPNG = () => {
+    trackExport('png', { page: currentPage + 1, totalPages });
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -688,6 +690,7 @@ export default function App() {
 
   // Export current page as JPG
   const handleExportJPG = () => {
+    trackExport('jpg', { page: currentPage + 1, totalPages });
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -700,6 +703,7 @@ export default function App() {
 
   // Export all pages as PDF
   const handleExportPDF = async () => {
+    trackExport('pdf', { totalPages });
     try {
       const isLandscape = config.canvasWidth > config.canvasHeight;
       const doc = new jsPDF({
@@ -739,6 +743,7 @@ export default function App() {
 
   // Print current page
   const handlePrint = () => {
+    trackExport('print', { page: currentPage + 1, totalPages });
     window.print();
   };
 
@@ -761,6 +766,12 @@ export default function App() {
       setText(initialBlocks[0].text);
       setCurrentPage(0);
     }
+  };
+
+  // Navigate to dedicated download page with tracking
+  const handleGoToDownload = () => {
+    trackExport('download_page_open', { totalPages });
+    setCurrentView('download');
   };
 
   if (currentView === 'download') {
@@ -808,7 +819,7 @@ export default function App() {
         lang={lang}
         onToggleLang={handleToggleLang}
         t={t}
-        onGoToDownload={() => setCurrentView('download')}
+        onGoToDownload={handleGoToDownload}
       />
 
       <main className="app-main">
@@ -861,7 +872,7 @@ export default function App() {
           totalLines={totalLines}
           lang={lang}
           t={t}
-          onGoToDownload={() => setCurrentView('download')}
+          onGoToDownload={handleGoToDownload}
         />
 
         <NotebookCanvas
